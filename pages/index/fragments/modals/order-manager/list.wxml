@@ -1,0 +1,100 @@
+<view
+  class="order-manager-list order-manager-list--skeleton"
+  wx:if="{{orderManagerLoading&&!(orderManagerItems&&orderManagerItems.length)}}"
+>
+  <view
+    class="order-manager-item order-manager-item--skeleton"
+    wx:for="{{[1,2,3]}}"
+    wx:key="*this"
+  >
+    <view class="order-manager-item__head">
+      <view
+        class="order-manager-skeleton-line order-manager-skeleton-line--no"
+      ></view>
+      <view
+        class="order-manager-skeleton-line order-manager-skeleton-line--status"
+      ></view>
+    </view>
+    <view class="order-manager-item__meta">
+      <view
+        class="order-manager-skeleton-line order-manager-skeleton-line--meta"
+      ></view>
+      <view
+        class="order-manager-skeleton-line order-manager-skeleton-line--meta-short"
+      ></view>
+      <view
+        class="order-manager-skeleton-line order-manager-skeleton-line--price"
+      ></view>
+    </view>
+    <view class="order-manager-item__brief">
+      <view
+        class="order-manager-item__preview order-manager-item__preview--skeleton"
+      ></view>
+      <view
+        class="order-manager-skeleton-line order-manager-skeleton-line--title"
+      ></view>
+    </view>
+  </view>
+</view>
+<view class="order-manager-empty" wx:elif="{{orderManagerError}}">
+  <text>{{orderManagerError}}</text>
+  <button catchtap="handleOrderManagerRetry" class="order-manager-retry">
+    重新加载
+  </button>
+</view>
+<view
+  class="order-manager-empty"
+  wx:elif="{{!(orderManagerItems&&orderManagerItems.length)}}"
+  >暂无符合条件的订单</view
+>
+<view wx:else>
+  <view class="order-manager-list">
+    <view
+      catchtap="handleOrderManagerSelectOrder"
+      class="order-manager-item {{orderManagerActiveOrderNo===item.orderNo?'order-manager-item--active':''}}"
+      data-order-no="{{item.orderNo}}"
+      wx:for="{{orderManagerItems}}"
+      wx:key="orderNo"
+    >
+      <view class="order-manager-item__head">
+        <text class="order-manager-item__no">{{item.orderNo}}</text>
+        <text class="order-manager-item__status">{{item.statusText}}</text>
+      </view>
+      <view class="order-manager-item__meta">
+        <text>{{item.createdAtText}}</text>
+        <text>{{item.itemCountText}}</text>
+        <text class="order-manager-item__price"
+          >{{item.payableAmountText}}</text
+        >
+      </view>
+      <view class="order-manager-item__brief">
+        <view class="order-manager-item__preview">
+          <image
+            class="order-manager-item__preview-image"
+            lazyLoad="{{true}}"
+            mode="aspectFit"
+            src="{{item.previewUrl}}"
+            wx:if="{{item.previewUrl}}"
+          ></image>
+          <mini-bracelet-flat
+            beadSize="{{11}}"
+            containerSize="{{40}}"
+            pattern="{{item.pattern}}"
+            wx:elif="{{item.pattern&&item.pattern.length}}"
+          ></mini-bracelet-flat>
+          <view class="order-manager-item__preview-placeholder" wx:else></view>
+        </view>
+        <text class="order-manager-item__title">{{item.firstItemTitle}}</text>
+      </view>
+    </view>
+  </view>
+  <button
+    catchtap="handleOrderManagerLoadMore"
+    class="order-manager-more"
+    disabled="{{orderManagerLoading}}"
+    loading="{{orderManagerLoading}}"
+    wx:if="{{orderManagerHasMore}}"
+  >
+    {{orderManagerLoading?'加载中...':'加载更多'}}
+  </button>
+</view>

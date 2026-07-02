@@ -1,0 +1,26 @@
+<view
+  class="bottom-nav {{photoMode||isStandaloneDiy||!isNavVisible||checkoutData||guideModalOpen||isCheckingOut||namingPayload||showProfileShareModal||showAddressManagerModal||showOrderManagerModal||showContentModal||showPaymentSuccessPopup||supportQrPopup&&supportQrPopup.visible?'bottom-nav--hidden':''}}"
+  style="bottom: {{bottomNavBottomPx}}px;"
+  wx:if="{{navTabs&&navTabs.length}}"
+>
+  <button
+    bindtap="handleSwitchTab"
+    class="bottom-nav__item {{item.id==='diy'?'bottom-nav__item--center':''}} {{item.id==='cart'?'bottom-nav__item--cart':''}} {{navActiveTab===item.id?'bottom-nav__item--active':''}}"
+    data-id="{{item.id}}"
+    wx:for="{{navTabs}}"
+    wx:key="id"
+  >
+    <view class="bottom-nav__center-ring" wx:if="{{item.id==='diy'}}"></view>
+    <view
+      class="bottom-nav__badge"
+      wx:if="{{item.id==='cart'&&cartItems.length}}"
+      >{{cartItems.length>99?'99+':cartItems.length}}</view
+    >
+    <image
+      class="bottom-nav__icon"
+      mode="aspectFit"
+      src="{{navActiveTab===item.id?item.activeIcon:item.inactiveIcon}}"
+    ></image>
+    <text class="bottom-nav__label">{{item.label}}</text>
+  </button>
+</view>

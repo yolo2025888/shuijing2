@@ -1,0 +1,834 @@
+<scroll-view
+  scrollY
+  bindscroll="handleScroll"
+  catchtap="handleNoop"
+  class="tab-scroll"
+  showScrollbar="false"
+  wx:if="{{activeTab==='profile'}}"
+>
+  <view
+    class="view-page profile-page {{profileSubView==='my_designs'?'profile-page--my-designs':''}}"
+  >
+    <view
+      class="profile-top"
+      style="padding-top: calc({{menuButtonTopPx}}px + {{menuButtonHeightPx}}px + 16rpx);--page-nav-h: {{menuButtonHeightPx}}px;"
+      wx:if="{{profileSubView!=='my_designs'}}"
+    >
+      <view
+        class="profile-safe-header"
+        style="top: 0;height: calc({{menuButtonTopPx}}px + {{menuButtonHeightPx}}px + 16rpx);padding-top: {{menuButtonTopPx}}px;padding-bottom: 16rpx;"
+      >
+        <text class="profile-safe-header__title">我的</text>
+      </view>
+      <view class="white-card profile-summary-card">
+        <block wx:if="{{!isLoggedIn}}">
+          <view class="profile-summary-card__row">
+            <view class="profile-avatar profile-avatar--login">
+              <image
+                class="profile-avatar__placeholder"
+                mode="aspectFill"
+                src="{{profileAvatarFallback}}"
+              ></image>
+            </view>
+            <view class="profile-login-copy">
+              <text class="profile-name">点击登录 / 注册</text>
+              <text class="profile-summary-card__sub"
+                >登录后可管理订单、地址与我的设计</text
+              >
+            </view>
+          </view>
+          <button
+            catchtap="handleLogin"
+            class="profile-phone-login-btn"
+          ></button>
+        </block>
+        <view class="profile-summary-card__row" wx:else>
+          <view
+            catchtap="handleCycleRole"
+            class="profile-avatar profile-avatar--active"
+          >
+            <view class="profile-avatar__inner">
+              <image
+                binderror="handleProfileAvatarError"
+                class="profile-avatar__image"
+                mode="aspectFill"
+                src="{{profileAvatarUrl||profileAvatarFallback}}"
+              ></image>
+            </view>
+          </view>
+          <view class="profile-login-copy">
+            <text class="profile-name">{{profileNickname||'微信用户'}}</text>
+            <view class="profile-identity-row">
+              <view
+                class="profile-tag profile-tag--identity"
+                wx:if="{{creatorIdentityStatus==='active'}}"
+              >
+                <image
+                  class="profile-tag__icon"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/designer-gold.svg"
+                ></image>
+                <text>共创设计师</text>
+              </view>
+              <view
+                class="profile-tag profile-tag--identity"
+                wx:if="{{distributorIdentityStatus==='active'}}"
+              >
+                <image
+                  class="profile-tag__icon"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/user-muted.svg"
+                ></image>
+                <text>分销商</text>
+              </view>
+              <view
+                class="profile-tag profile-tag--identity"
+                wx:if="{{creatorIdentityStatus!=='active'&&distributorIdentityStatus!=='active'&&(profileDashboardLoading||creatorIdentityStatus==='unknown'||distributorIdentityStatus==='unknown')}}"
+              >
+                <image
+                  class="profile-tag__icon"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/user-muted.svg"
+                ></image>
+                <text>身份同步中</text>
+              </view>
+              <view
+                class="profile-tag profile-tag--identity"
+                wx:if="{{authVerifying}}"
+              >
+                <image
+                  class="profile-tag__icon"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/user-muted.svg"
+                ></image>
+                <text>登录校验中</text>
+              </view>
+              <view
+                class="profile-tag profile-tag--identity"
+                wx:if="{{creatorIdentityStatus!=='active'&&distributorIdentityStatus!=='active'&&!(profileDashboardLoading||creatorIdentityStatus==='unknown'||distributorIdentityStatus==='unknown')}}"
+              >
+                <image
+                  class="profile-tag__icon"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/user-muted.svg"
+                ></image>
+                <text>普通用户</text>
+              </view>
+              <text class="profile-tag profile-tag--member-no"
+                >ID {{profileUserId||'--'}}</text
+              >
+            </view>
+          </view>
+        </view>
+        <view class="profile-quick-grid">
+          <view
+            catchtap="handleProfileOrderTap"
+            class="profile-quick-item"
+            data-id="all"
+          >
+            <view class="profile-quick-item__icon-wrap">
+              <image
+                class="profile-quick-item__icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/order-card-green.svg"
+              ></image>
+            </view>
+            <text class="profile-quick-item__label">我的订单</text>
+          </view>
+          <view
+            catchtap="handleProfileServiceTap"
+            class="profile-quick-item"
+            data-id="my_designs"
+          >
+            <view class="profile-quick-item__icon-wrap">
+              <image
+                class="profile-quick-item__icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/nav-design-dark.svg"
+              ></image>
+            </view>
+            <text class="profile-quick-item__label">我的设计</text>
+          </view>
+          <view
+            catchtap="handleProfileServiceTap"
+            class="profile-quick-item"
+            data-id="address"
+          >
+            <view class="profile-quick-item__icon-wrap">
+              <image
+                class="profile-quick-item__icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/service-location-muted.svg"
+              ></image>
+            </view>
+            <text class="profile-quick-item__label">收货地址</text>
+          </view>
+          <button
+            catchtap="handleOpenContactQrPopup"
+            class="profile-quick-item profile-quick-item--contact"
+          >
+            <view class="profile-quick-item__icon-wrap">
+              <image
+                class="profile-quick-item__icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/service-help-muted.svg"
+              ></image>
+            </view>
+            <text class="profile-quick-item__label"
+              >{{profileQuickContactLabel||'联系客服'}}</text
+            >
+          </button>
+        </view>
+      </view>
+    </view>
+    <view class="profile-content">
+      <view
+        catchtap="handleProfileOrderTap"
+        class="profile-mask"
+        wx:if="{{!isLoggedIn&&profileSubView!=='my_designs'}}"
+      ></view>
+      <view
+        class="profile-my-designs"
+        wx:if="{{profileSubView==='my_designs'}}"
+      >
+        <view
+          class="profile-my-designs__safe-head"
+          style="padding-top: {{menuButtonTopPx}}px;--page-nav-h: {{menuButtonHeightPx}}px;"
+        >
+          <view
+            catchtap="handleMyDesignBack"
+            class="profile-my-designs__safe-left"
+          >
+            <image
+              class="profile-my-designs__safe-back-icon"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/icons/back-dark.svg"
+            ></image>
+          </view>
+          <text class="profile-my-designs__safe-title">我的设计</text>
+          <view class="profile-my-designs__safe-right"></view>
+        </view>
+        <view class="white-card profile-my-designs__head-card">
+          <view class="profile-my-designs__desc"
+            >这里会保存你在 DIY
+            中创建并命名的方案，可继续编辑、分享或删除。</view
+          >
+          <view
+            class="profile-my-designs__summary-skeleton"
+            wx:if="{{savedSchemesLoading&&!savedSchemes.length}}"
+          ></view>
+          <view class="profile-my-designs__summary" wx:else>
+            <text>共 {{savedSchemes.length||0}} 条记录</text>
+          </view>
+        </view>
+        <view
+          class="scheme-grid profile-my-designs__list profile-my-designs__list--skeleton"
+          wx:if="{{savedSchemesLoading&&!savedSchemes.length}}"
+        >
+          <view
+            class="scheme-card scheme-card--skeleton"
+            wx:for="{{[1,2]}}"
+            wx:key="*this"
+          >
+            <view
+              class="scheme-card__preview scheme-card__preview--skeleton"
+            ></view>
+            <view class="scheme-card__foot">
+              <view class="scheme-card__line scheme-card__line--name"></view>
+              <view class="scheme-card__line scheme-card__line--date"></view>
+            </view>
+          </view>
+        </view>
+        <view
+          class="scheme-grid profile-my-designs__list"
+          wx:elif="{{savedSchemes.length>0}}"
+        >
+          <view
+            catchtap="handleMyDesignContinueEdit"
+            class="scheme-card profile-my-designs__item"
+            data-id="{{item.id}}"
+            wx:for="{{savedSchemes}}"
+            wx:key="id"
+          >
+            <view class="scheme-card__tools">
+              <button
+                catchtap="handleNoop"
+                class="scheme-tool scheme-tool--share"
+                data-id="{{item.id}}"
+                data-name="{{item.name}}"
+                data-share-source="saved_scheme"
+                openType="share"
+                wx:if="{{savedSchemeShareStateMap[item.id]&&savedSchemeShareStateMap[item.id].status==='ready'}}"
+              >
+                <image
+                  class="scheme-tool__icon"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/share-fill-white.svg"
+                ></image>
+              </button>
+              <button
+                catchtap="handlePrepareShareScheme"
+                class="scheme-tool scheme-tool--share"
+                data-id="{{item.id}}"
+                data-name="{{item.name}}"
+                disabled="{{savedSchemeShareStateMap[item.id]&&savedSchemeShareStateMap[item.id].status==='preparing'}}"
+                loading="{{savedSchemeShareStateMap[item.id]&&savedSchemeShareStateMap[item.id].status==='preparing'}}"
+                wx:else
+              >
+                <image
+                  class="scheme-tool__icon"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/share-fill-white.svg"
+                ></image>
+              </button>
+              <button
+                catchtap="handleMyDesignDelete"
+                class="scheme-tool"
+                data-id="{{item.id}}"
+                data-name="{{item.name}}"
+              >
+                <image
+                  class="scheme-tool__icon scheme-tool__icon--dark"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/close-muted.svg"
+                ></image>
+              </button>
+            </view>
+            <view class="scheme-card__preview">
+              <view
+                class="scheme-card__preview-loading"
+                wx:if="{{item.previewAssetStatus==='pending'||item.previewAssetsLoading}}"
+              >
+                <view class="scheme-card__preview-loading-ring"></view>
+              </view>
+              <mini-bracelet-flat
+                beadSize="{{14}}"
+                class="scheme-card__preview-bracelet"
+                containerSize="{{110}}"
+                materials="{{item.materialMap||item.materialSnapshot}}"
+                pattern="{{item.pattern}}"
+                wx:elif="{{item.pattern&&item.pattern.length}}"
+              ></mini-bracelet-flat>
+              <image
+                class="scheme-card__preview-media"
+                lazyLoad="{{true}}"
+                mode="aspectFit"
+                src="{{item.previewUrl||item.snapshotUrl}}"
+                wx:elif="{{item.previewUrl||item.snapshotUrl}}"
+              ></image>
+              <mini-bracelet-flat
+                beadSize="{{14}}"
+                class="scheme-card__preview-bracelet"
+                containerSize="{{110}}"
+                materials="{{item.materialMap||item.materialSnapshot}}"
+                pattern="{{item.pattern}}"
+                wx:else
+              ></mini-bracelet-flat>
+            </view>
+            <view class="scheme-card__foot">
+              <text class="scheme-card__name">{{item.name||'未命名作品'}}</text>
+              <text class="scheme-card__date">{{item.date||'--'}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="white-card profile-my-designs__empty-card" wx:else>
+          <view class="profile-my-designs__empty"
+            >你还没有保存过作品，去 DIY 页面创作后即可在这里查看。</view
+          >
+          <button
+            bindtap="handleMyDesignGoDiy"
+            class="profile-my-designs__go-diy-btn"
+          >
+            去 DIY 创作
+          </button>
+        </view>
+      </view>
+      <view
+        class="profile-body {{!isLoggedIn?'profile-body--locked':''}}"
+        wx:else
+      >
+        <view class="white-card service-card">
+          <view
+            catchtap="handleProfileServiceTap"
+            class="service-item"
+            data-id="{{item.id}}"
+            data-title="{{item.title}}"
+            wx:if="{{item.id==='notify'||item.id==='help'||item.id==='terms'}}"
+            wx:for="{{serviceItems}}"
+            wx:key="id"
+          >
+            <view class="service-item__left">
+              <view class="service-item__icon-wrap">
+                <image
+                  class="service-item__icon"
+                  mode="aspectFit"
+                  src="{{item.icon}}"
+                ></image>
+              </view>
+              <view class="service-item__copy">
+                <text class="service-item__title">{{item.title}}</text>
+                <text class="service-item__sub">{{item.sub}}</text>
+              </view>
+            </view>
+            <image
+              class="service-item__chevron"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/icons/chevron-right-dark.svg"
+            ></image>
+          </view>
+        </view>
+        <view
+          class="profile-apply-card profile-apply-card--designer"
+          wx:if="{{isLoggedIn&&creatorIdentityStatus!=='active'&&(profileDashboardLoading||creatorIdentityStatus==='unknown')}}"
+        >
+          <view class="profile-apply-card__bg profile-apply-card__bg--a"></view>
+          <view class="profile-apply-card__bg profile-apply-card__bg--b"></view>
+          <view class="profile-apply-card__badge">
+            <image
+              class="profile-apply-card__badge-icon"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/icons/designer-gold.svg"
+            ></image>
+            <text class="profile-apply-card__badge-text">身份同步中</text>
+          </view>
+          <view class="profile-apply-card__head">
+            <text class="profile-apply-card__title">设计师身份确认中</text>
+            <text class="profile-apply-card__sub"
+              >正在同步设计师权益与面板入口</text
+            >
+          </view>
+          <view class="profile-apply-card__foot">
+            <button
+              class="profile-apply-card__btn"
+              disabled="{{true}}"
+              loading="{{true}}"
+            >
+              <text>同步中</text>
+            </button>
+          </view>
+        </view>
+        <view
+          class="profile-apply-card profile-apply-card--designer"
+          wx:elif="{{creatorIdentityStatus==='active'}}"
+        >
+          <view class="profile-apply-card__bg profile-apply-card__bg--a"></view>
+          <view class="profile-apply-card__bg profile-apply-card__bg--b"></view>
+          <view class="profile-apply-card__badge">
+            <image
+              class="profile-apply-card__badge-icon"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/icons/designer-gold.svg"
+            ></image>
+            <text class="profile-apply-card__badge-text"
+              >{{profileApplyCardCopy.designer.active.badgeText||'设计师面板'}}</text
+            >
+          </view>
+          <view class="profile-apply-card__head">
+            <text class="profile-apply-card__title"
+              >{{profileApplyCardCopy.designer.active.title||'我的共创设计师面板'}}</text
+            >
+            <text class="profile-apply-card__sub"
+              >{{profileApplyCardCopy.designer.active.sub||'查看等级、返佣比例、作品审核状态与收益记录'}}</text
+            >
+          </view>
+          <view class="profile-apply-card__foot">
+            <view class="profile-apply-card__stats">
+              <view class="profile-apply-card__stat">
+                <text class="profile-apply-card__stat-value"
+                  >{{creatorPanelSummary.levelName||'--'}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{profileApplyCardCopy.designer.active.stats[0].label||'当前等级'}}</text
+                >
+              </view>
+              <view class="profile-apply-card__stat">
+                <text class="profile-apply-card__stat-value"
+                  >{{creatorPanelSummary.commissionRateText||'--'}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{profileApplyCardCopy.designer.active.stats[1].label||'返佣比例'}}</text
+                >
+              </view>
+              <view class="profile-apply-card__stat">
+                <text class="profile-apply-card__stat-value"
+                  >{{creatorPanelSummary.quoteCount||0}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{profileApplyCardCopy.designer.active.stats[2].label||'被引用次数'}}</text
+                >
+              </view>
+            </view>
+            <button
+              bindtap="handleOpenCreatorPanelPage"
+              class="profile-apply-card__btn"
+            >
+              <text
+                >{{profileApplyCardCopy.designer.active.buttonText||'进入面板'}}</text
+              >
+              <text class="profile-apply-card__btn-arrow">></text>
+            </button>
+          </view>
+          <view class="profile-apply-card__doc-row">
+            <view
+              catchtap="handleOpenApplyDocSheet"
+              class="profile-apply-card__doc-entry"
+              data-type="designer"
+            >
+              <image
+                class="profile-apply-card__doc-icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/service-help-muted.svg"
+              ></image>
+              <text class="profile-apply-card__doc-text"
+                >{{profileApplyDocLabels.designer||'入驻说明文档'}}</text
+              >
+              <text class="profile-apply-card__doc-arrow">></text>
+            </view>
+          </view>
+        </view>
+        <view
+          class="profile-apply-card profile-apply-card--designer"
+          wx:elif="{{creatorIdentityStatus==='pending'}}"
+        >
+          <view class="profile-apply-card__bg profile-apply-card__bg--a"></view>
+          <view class="profile-apply-card__bg profile-apply-card__bg--b"></view>
+          <view class="profile-apply-card__badge">
+            <image
+              class="profile-apply-card__badge-icon"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/icons/designer-gold.svg"
+            ></image>
+            <text class="profile-apply-card__badge-text"
+              >{{profileApplyCardCopy.designer.pending.badgeText||'审核中'}}</text
+            >
+          </view>
+          <view class="profile-apply-card__head">
+            <text class="profile-apply-card__title"
+              >{{profileApplyCardCopy.designer.pending.title||'设计师申请已提交'}}</text
+            >
+            <text class="profile-apply-card__sub"
+              >{{profileApplyCardCopy.designer.pending.sub||'官方审核中，请在“我的通知”查看最新进度'}}</text
+            >
+          </view>
+          <view class="profile-apply-card__foot">
+            <button
+              bindtap="handleOpenCreatorNotificationsPage"
+              class="profile-apply-card__btn"
+            >
+              <text
+                >{{profileApplyCardCopy.designer.pending.buttonText||'查看通知'}}</text
+              >
+              <text class="profile-apply-card__btn-arrow">></text>
+            </button>
+          </view>
+          <view class="profile-apply-card__doc-row">
+            <view
+              catchtap="handleOpenApplyDocSheet"
+              class="profile-apply-card__doc-entry"
+              data-type="designer"
+            >
+              <image
+                class="profile-apply-card__doc-icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/service-help-muted.svg"
+              ></image>
+              <text class="profile-apply-card__doc-text"
+                >{{profileApplyDocLabels.designer||'入驻说明文档'}}</text
+              >
+              <text class="profile-apply-card__doc-arrow">></text>
+            </view>
+          </view>
+        </view>
+        <view class="profile-apply-card profile-apply-card--designer" wx:else>
+          <view class="profile-apply-card__bg profile-apply-card__bg--a"></view>
+          <view class="profile-apply-card__bg profile-apply-card__bg--b"></view>
+          <view class="profile-apply-card__badge">
+            <image
+              class="profile-apply-card__badge-icon"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/icons/designer-gold.svg"
+            ></image>
+            <text class="profile-apply-card__badge-text"
+              >{{profileApplyCardCopy.designer.normal.badgeText||'驻场设计师'}}</text
+            >
+          </view>
+          <view class="profile-apply-card__head">
+            <text class="profile-apply-card__title"
+              >{{profileApplyCardCopy.designer.normal.title||'成为 StoneLab 驻场设计师'}}</text
+            >
+            <text class="profile-apply-card__sub"
+              >{{profileApplyCardCopy.designer.normal.sub||'上传作品并绑定真实订单，通过审核后可进入灵感展示池'}}</text
+            >
+          </view>
+          <view class="profile-apply-card__foot">
+            <view class="profile-apply-card__stats">
+              <view class="profile-apply-card__stat">
+                <text class="profile-apply-card__stat-value"
+                  >{{profileApplyCardCopy.designer.normal.stats[0].value||'1,200+'}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{profileApplyCardCopy.designer.normal.stats[0].label||'驻场设计师'}}</text
+                >
+              </view>
+              <view class="profile-apply-card__stat">
+                <text class="profile-apply-card__stat-value"
+                  >{{profileApplyCardCopy.designer.normal.stats[1].value||'¥62w'}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{profileApplyCardCopy.designer.normal.stats[1].label||'最高月收益'}}</text
+                >
+              </view>
+              <view class="profile-apply-card__stat">
+                <text class="profile-apply-card__stat-value"
+                  >{{profileApplyCardCopy.designer.normal.stats[2].value||'4.9'}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{profileApplyCardCopy.designer.normal.stats[2].label||'平均评分'}}</text
+                >
+              </view>
+            </view>
+            <button
+              bindtap="handleOpenDesignerApplyPage"
+              class="profile-apply-card__btn"
+            >
+              <text
+                >{{profileApplyCardCopy.designer.normal.buttonText||'立即申请'}}</text
+              >
+              <text class="profile-apply-card__btn-arrow">></text>
+            </button>
+          </view>
+          <view class="profile-apply-card__doc-row">
+            <view
+              catchtap="handleOpenApplyDocSheet"
+              class="profile-apply-card__doc-entry"
+              data-type="designer"
+            >
+              <image
+                class="profile-apply-card__doc-icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/service-help-muted.svg"
+              ></image>
+              <text class="profile-apply-card__doc-text"
+                >{{profileApplyDocLabels.designer||'入驻说明文档'}}</text
+              >
+              <text class="profile-apply-card__doc-arrow">></text>
+            </view>
+          </view>
+        </view>
+        <view
+          class="profile-apply-card profile-apply-card--distributor"
+          wx:if="{{isLoggedIn&&distributorIdentityStatus!=='active'&&(profileDashboardLoading||distributorIdentityStatus==='unknown')}}"
+        >
+          <view class="profile-apply-card__bg profile-apply-card__bg--a"></view>
+          <view class="profile-apply-card__bg profile-apply-card__bg--b"></view>
+          <view
+            class="profile-apply-card__badge profile-apply-card__badge--distributor"
+          >
+            <image
+              class="profile-apply-card__badge-icon"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/icons/service-help-muted.svg"
+            ></image>
+            <text class="profile-apply-card__badge-text">身份同步中</text>
+          </view>
+          <view class="profile-apply-card__head">
+            <text class="profile-apply-card__title">分销商身份确认中</text>
+            <text class="profile-apply-card__sub"
+              >正在同步分销权益与面板入口</text
+            >
+          </view>
+          <view class="profile-apply-card__foot">
+            <button
+              class="profile-apply-card__btn profile-apply-card__btn--gold"
+              disabled="{{true}}"
+              loading="{{true}}"
+            >
+              <text>同步中</text>
+            </button>
+          </view>
+        </view>
+        <view
+          class="profile-apply-card profile-apply-card--distributor"
+          wx:else
+        >
+          <view class="profile-apply-card__bg profile-apply-card__bg--a"></view>
+          <view class="profile-apply-card__bg profile-apply-card__bg--b"></view>
+          <view
+            class="profile-apply-card__badge profile-apply-card__badge--distributor"
+          >
+            <image
+              class="profile-apply-card__badge-icon"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/icons/service-help-muted.svg"
+            ></image>
+            <text class="profile-apply-card__badge-text"
+              >{{distributorIdentityStatus==='active'?profileApplyCardCopy.distributor.active.badgeText||'代理分销':distributorIdentityStatus==='pending'?profileApplyCardCopy.distributor.pending.badgeText||'代理分销':profileApplyCardCopy.distributor.normal.badgeText||'代理分销'}}</text
+            >
+          </view>
+          <view class="profile-apply-card__head">
+            <text class="profile-apply-card__title"
+              >{{distributorIdentityStatus==='active'?profileApplyCardCopy.distributor.active.title||'分销商面板':distributorIdentityStatus==='pending'?profileApplyCardCopy.distributor.pending.title||'分销申请审核中':profileApplyCardCopy.distributor.normal.title||'成为 StoneLab 授权代理商'}}</text
+            >
+            <text class="profile-apply-card__sub"
+              >{{distributorIdentityStatus==='active'?profileApplyCardCopy.distributor.active.sub||'查看下级关系、收益明细与专属邀请入口':distributorIdentityStatus==='pending'?profileApplyCardCopy.distributor.pending.sub||'申请审核中，请耐心等待官方审核结果':profileApplyCardCopy.distributor.normal.sub||'开通分销合作权益，获取官方支持与稳定供货能力'}}</text
+            >
+          </view>
+          <view class="profile-apply-card__foot">
+            <view class="profile-apply-card__stats">
+              <view class="profile-apply-card__stat">
+                <text
+                  class="profile-apply-card__stat-value profile-apply-card__stat-value--gold"
+                  >{{distributorIdentityStatus==='active'?distributorPanelSummary.downlineCount||0:profileApplyCardCopy.distributor.normal.stats[0].value||'320+'}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{distributorIdentityStatus==='active'?profileApplyCardCopy.distributor.active.stats[0].label||'直属人数':profileApplyCardCopy.distributor.normal.stats[0].label||'授权渠道商'}}</text
+                >
+              </view>
+              <view class="profile-apply-card__stat">
+                <text
+                  class="profile-apply-card__stat-value profile-apply-card__stat-value--gold"
+                  wx:if="{{distributorIdentityStatus==='active'}}"
+                  >¥{{distributorPanelSummary.pendingAmountText||'0.00'}}</text
+                >
+                <text
+                  class="profile-apply-card__stat-value profile-apply-card__stat-value--gold"
+                  wx:else
+                  >{{profileApplyCardCopy.distributor.normal.stats[1].value||'¥35w'}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{distributorIdentityStatus==='active'?profileApplyCardCopy.distributor.active.stats[1].label||'待结算收益':profileApplyCardCopy.distributor.normal.stats[1].label||'最高月分销额'}}</text
+                >
+              </view>
+              <view class="profile-apply-card__stat">
+                <text
+                  class="profile-apply-card__stat-value profile-apply-card__stat-value--gold"
+                  >{{distributorIdentityStatus==='active'?distributorPanelSummary.commissionRateText||'--':profileApplyCardCopy.distributor.normal.stats[2].value||'85折'}}</text
+                >
+                <text class="profile-apply-card__stat-label"
+                  >{{distributorIdentityStatus==='active'?profileApplyCardCopy.distributor.active.stats[2].label||'返佣比例':profileApplyCardCopy.distributor.normal.stats[2].label||'最低拿货价'}}</text
+                >
+              </view>
+            </view>
+            <button
+              bindtap="handleOpenDistributorApplyPage"
+              class="profile-apply-card__btn profile-apply-card__btn--gold"
+              disabled="{{distributorIdentityStatus==='pending'}}"
+            >
+              <text
+                >{{distributorIdentityStatus==='active'?profileApplyCardCopy.distributor.active.buttonText||'进入面板':distributorIdentityStatus==='pending'?profileApplyCardCopy.distributor.pending.buttonText||'正在申请中请等待':profileApplyCardCopy.distributor.normal.buttonText||'立即申请'}}</text
+              >
+              <text
+                class="profile-apply-card__btn-arrow"
+                wx:if="{{distributorIdentityStatus!=='pending'}}"
+                >></text
+              >
+            </button>
+          </view>
+          <view class="profile-apply-card__doc-row">
+            <view
+              catchtap="handleOpenApplyDocSheet"
+              class="profile-apply-card__doc-entry"
+              data-type="distributor"
+            >
+              <image
+                class="profile-apply-card__doc-icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/service-help-muted.svg"
+              ></image>
+              <text class="profile-apply-card__doc-text"
+                >{{profileApplyDocLabels.distributor||'合作说明文档'}}</text
+              >
+              <text class="profile-apply-card__doc-arrow">></text>
+            </view>
+          </view>
+        </view>
+        <view
+          catchtap="handleCloseApplyDocSheet"
+          class="profile-doc-sheet-mask"
+          wx:if="{{showProfileApplyDocSheet}}"
+        >
+          <view catchtap="handleNoop" class="profile-doc-sheet">
+            <view class="profile-doc-sheet__grabber-wrap">
+              <view class="profile-doc-sheet__grabber"></view>
+            </view>
+            <view class="profile-doc-sheet__head">
+              <view class="profile-doc-sheet__head-left">
+                <view
+                  class="profile-doc-sheet__head-icon"
+                  style="background: {{profileApplyDocAccent}}30;"
+                >
+                  <image
+                    class="profile-doc-sheet__head-icon-img"
+                    mode="aspectFit"
+                    src="{{assetUiBaseUrl}}/icons/service-help-muted.svg"
+                  ></image>
+                </view>
+                <text class="profile-doc-sheet__head-title"
+                  >{{profileApplyDocTitle}}</text
+                >
+              </view>
+              <view
+                catchtap="handleCloseApplyDocSheet"
+                class="profile-doc-sheet__close"
+              >
+                <image
+                  class="profile-doc-sheet__head-icon-img"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/close-thin-muted.svg"
+                ></image>
+              </view>
+            </view>
+            <scroll-view
+              scrollY
+              class="profile-doc-sheet__scroll"
+              showScrollbar="false"
+            >
+              <view
+                class="profile-doc-sheet__section"
+                wx:for="{{profileApplyDocSections}}"
+                wx:for-index="sectionIndex"
+                wx:for-item="section"
+                wx:key="heading"
+              >
+                <view class="profile-doc-sheet__section-head">
+                  <view
+                    class="profile-doc-sheet__section-mark"
+                    style="background: {{profileApplyDocAccent}};"
+                  ></view>
+                  <text class="profile-doc-sheet__section-title"
+                    >{{section.heading}}</text
+                  >
+                </view>
+                <view class="profile-doc-sheet__items">
+                  <view
+                    class="profile-doc-sheet__item"
+                    wx:for="{{section.items}}"
+                    wx:for-index="docIndex"
+                    wx:for-item="docItem"
+                    wx:key="docIndex"
+                  >
+                    <view
+                      class="profile-doc-sheet__item-index"
+                      style="color: {{profileApplyDocAccent}};"
+                      ><text wx:if="{{docIndex<9}}">0</text>{{docIndex+1}}</view
+                    >
+                    <text class="profile-doc-sheet__item-text"
+                      >{{docItem}}</text
+                    >
+                  </view>
+                </view>
+              </view>
+            </scroll-view>
+          </view>
+        </view>
+      </view>
+      <button
+        catchtap="handleLogout"
+        class="logout-link"
+        wx:if="{{isLoggedIn&&profileSubView!=='my_designs'}}"
+      >
+        退出登录 / 切换账号
+      </button>
+    </view>
+  </view>
+</scroll-view>

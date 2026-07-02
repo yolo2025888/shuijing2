@@ -1,0 +1,208 @@
+<view
+  catchtap="handleCloseGuide"
+  class="modal-layer"
+  wx:if="{{guideModalOpen}}"
+>
+  <view class="modal-backdrop modal-backdrop--blur"></view>
+  <view catchtap="handleNoop" class="sheet sheet--guide">
+    <view class="guide-header">
+      <view
+        class="guide-header-spacer"
+        style="width: 64rpx;flex-shrink: 0;"
+      ></view>
+      <view class="guide-header-title">使用指南</view>
+      <view bindtap="handleCloseGuide" class="guide-header-close">
+        <image
+          class="close-icon"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/icons/close-muted.svg"
+        ></image>
+      </view>
+    </view>
+    <scroll-view enableFlex scrollX class="guide-tabs" showScrollbar="false">
+      <view class="guide-tabs__row">
+        <button
+          catchtap="handleGuideTabChange"
+          class="guide-tab {{guideTab===item.id?'guide-tab--active':''}}"
+          data-id="{{item.id}}"
+          wx:for="{{guideTabs}}"
+          wx:key="id"
+        >
+          {{item.label}}
+        </button>
+      </view>
+    </scroll-view>
+    <scroll-view scrollY class="guide-body" showScrollbar="false">
+      <view
+        class="guide-section guide-section--tips"
+        wx:if="{{guideTab==='tips'&&currentOperationTip}}"
+      >
+        <view class="guide-tips-card">
+          <view class="guide-tips-card__head">
+            <text class="guide-tips-card__kicker"
+              >{{currentOperationTip.kicker}}</text
+            >
+            <text class="guide-tips-card__step"
+              >{{currentOperationTip.stepText}}/{{operationTipTotalText}}</text
+            >
+          </view>
+          <view class="guide-tips-card__visual">
+            <view class="guide-tips-card__icon-wrap">
+              <image
+                class="guide-tips-card__icon"
+                mode="aspectFit"
+                src="{{currentOperationTip.icon}}"
+                wx:if="{{currentOperationTip.icon}}"
+              ></image>
+              <image
+                class="guide-tips-card__icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/info-gold.svg"
+                wx:else
+              ></image>
+            </view>
+          </view>
+          <text class="guide-tips-card__title"
+            >{{currentOperationTip.title}}</text
+          >
+          <text class="guide-tips-card__copy"
+            >{{currentOperationTip.copy}}</text
+          >
+          <view class="guide-tips-progress">
+            <view
+              class="guide-tips-progress__dot {{operationTipIndex===index+1?'guide-tips-progress__dot--active':''}}"
+              wx:for="{{operationTips}}"
+              wx:key="stepText"
+            ></view>
+          </view>
+        </view>
+        <view class="guide-pager">
+          <button
+            catchtap="handlePrevOperationTip"
+            class="guide-pager__btn guide-pager__btn--active"
+          >
+            上一页
+          </button>
+          <text class="guide-pager__text"
+            >{{operationTipIndex}} /
+            {{operationTips&&operationTips.length||0}}</text
+          >
+          <button
+            catchtap="handleNextOperationTip"
+            class="guide-pager__btn guide-pager__btn--active"
+          >
+            下一页
+          </button>
+        </view>
+      </view>
+      <view
+        class="guide-section"
+        wx:elif="{{guideTab==='tutorial'&&currentTutorialSlide}}"
+      >
+        <view class="guide-tutorial-card">
+          <view class="guide-tutorial-card__inner">
+            <image
+              class="guide-tutorial-card__icon"
+              mode="aspectFit"
+              src="{{currentTutorialSlide.icon}}"
+            ></image>
+            <text class="guide-tutorial-card__title"
+              >{{currentTutorialSlide.title}}</text
+            >
+            <text class="guide-tutorial-card__desc"
+              >{{currentTutorialSlide.desc}}</text
+            >
+          </view>
+        </view>
+        <view class="guide-pager">
+          <button
+            catchtap="handlePrevTutorial"
+            class="guide-pager__btn {{tutorialStep===1?'guide-pager__btn--disabled':'guide-pager__btn--active'}}"
+          >
+            上一页
+          </button>
+          <text class="guide-pager__text"
+            >{{tutorialSlides&&tutorialSlides.length?tutorialStep:0}} /
+            {{tutorialSlides&&tutorialSlides.length||0}}</text
+          >
+          <button
+            catchtap="handleNextTutorial"
+            class="guide-pager__btn {{tutorialStep===(tutorialSlides&&tutorialSlides.length||0)?'guide-pager__btn--disabled':'guide-pager__btn--active'}}"
+          >
+            下一页
+          </button>
+        </view>
+      </view>
+      <view class="guide-section" wx:elif="{{guideTab==='measure'}}">
+        <view class="measure-hero">
+          <image
+            class="measure-hero__image"
+            lazyLoad="{{true}}"
+            mode="aspectFit"
+            src="{{assetUiBaseUrl}}/guide/wrist-measure-guide.jpg"
+          ></image>
+        </view>
+        <view class="measure-switch">
+          <button
+            catchtap="handleMeasureGenderChange"
+            class="measure-switch__item {{measureGender==='F'?'measure-switch__item--active':''}}"
+            data-gender="F"
+          >
+            女生参考
+          </button>
+          <button
+            catchtap="handleMeasureGenderChange"
+            class="measure-switch__item {{measureGender==='M'?'measure-switch__item--active':''}}"
+            data-gender="M"
+          >
+            男生参考
+          </button>
+        </view>
+        <view class="measure-guide-card">
+          <view class="measure-guide-card__diagram">
+            <view
+              class="measure-guide-card__ring measure-guide-card__ring--dash"
+            ></view>
+            <view class="measure-guide-card__ring"></view>
+          </view>
+          <text class="measure-guide-card__copy"
+            >用软尺贴合手腕最细处测量一圈，读数即为手围。建议贴合但不勒紧，最终佩戴舒适度会更稳定。</text
+          >
+        </view>
+        <view class="measure-grid">
+          <view
+            class="measure-grid__item"
+            wx:for="{{measureCards}}"
+            wx:key="size"
+          >
+            <text class="measure-grid__size">{{item.size}}</text>
+            <text class="measure-grid__desc">{{item.desc}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="guide-section" wx:elif="{{guideTab==='size'}}">
+        <view class="size-card">
+          <text class="size-card__copy"
+            >常见珠径会影响整体风格和重量，建议按佩戴场景选择。</text
+          >
+          <text class="size-card__copy-sub"
+            >8mm 轻巧日常，10mm 均衡百搭，12mm 更有存在感。</text
+          >
+          <view class="size-compare">
+            <view
+              class="size-compare__item"
+              wx:for="{{sizeCompareItems}}"
+              wx:key="mm"
+            >
+              <view
+                class="size-dot {{item.mm==='8mm'?'size-dot--8':item.mm==='10mm'?'size-dot--10':'size-dot--12'}}"
+              ></view>
+              <text class="size-compare__mm">{{item.mm}}</text>
+              <text class="size-compare__label">{{item.label}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

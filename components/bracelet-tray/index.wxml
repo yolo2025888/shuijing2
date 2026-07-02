@@ -1,0 +1,88 @@
+<view
+  class="tray-shell {{photoMode?'tray-shell--photo photo-stage':''}}"
+  style="{{shellStyle}};"
+>
+  <canvas
+    class="tray-layer tray-layer--bg {{photoMode?'photo-stage':''}}"
+    id="trayBgCanvas"
+    style="{{trayCanvasStyle}};"
+    type="2d"
+  ></canvas>
+  <canvas
+    catchtouchcancel="handleTouchEnd"
+    catchtouchend="handleTouchEnd"
+    catchtouchmove="handleTouchMove"
+    catchtouchstart="handleTouchStart"
+    class="tray-layer tray-layer--bead {{strungDomCanvasHidden?'tray-layer--bead-covered':''}} {{photoMode?'photo-stage':''}}"
+    id="beadCanvas"
+    style="{{beadCanvasStyle}};"
+    type="2d"
+  ></canvas>
+  <canvas
+    class="tray-layer tray-layer--photo-shadow {{photoMode&&photoSnapshotVisible?'tray-layer--photo-shadow-visible photo-stage':''}}"
+    id="photoTrayShadowCanvas"
+    style="{{photoShadowCanvasStyle}};"
+    type="2d"
+  ></canvas>
+  <canvas
+    class="tray-layer tray-layer--dom-shadow {{showStrungDomShadowLayer&&strungDomOverlayVisible?'tray-layer--dom-shadow-visible':''}}"
+    id="strungDomShadowCanvas"
+    style="{{beadCanvasStyle}}{{strungDomOverlayStyle}};"
+    type="2d"
+  ></canvas>
+  <view
+    class="tray-dom-overlay {{strungDomOverlayVisible?'tray-dom-overlay--visible':''}} {{strungDomOverlayRotating?'tray-dom-overlay--rotating':''}} {{strungDomOverlayLayoutFrozen?'tray-dom-overlay--layout-frozen':''}} {{strungDomOverlayRotating||strungDomDragProxyVisible||strungDomFlyInVisible?'tray-dom-overlay--interacting':''}} {{photoMode?'photo-stage':''}}"
+    style="{{beadCanvasStyle}}{{strungDomOverlayStyle}};"
+    wx:if="{{showStrungDomOverlay}}"
+  >
+    <view
+      class="tray-dom-bead {{item.hidden?'tray-dom-bead--hidden':''}}"
+      style="{{item.wrapStyle}};"
+      wx:for="{{strungDomOverlayBeads}}"
+      wx:key="uid"
+    >
+      <image
+        class="tray-dom-bead__image {{item.useBodyDropShadow&&showStrungDomShadowLayer?'tray-dom-bead__image--settled':''}}"
+        mode="aspectFit"
+        src="{{item.imgUrl}}"
+        style="{{item.imageStyle}};"
+      ></image>
+    </view>
+    <view
+      class="tray-dom-bead tray-dom-bead--proxy"
+      style="{{strungDomDragProxy.wrapStyle}};"
+      wx:if="{{strungDomDragProxyVisible}}"
+    >
+      <image
+        class="tray-dom-bead__image"
+        mode="aspectFit"
+        src="{{strungDomDragProxy.imgUrl}}"
+        style="{{strungDomDragProxy.imageStyle}};"
+      ></image>
+    </view>
+    <view
+      class="tray-dom-bead tray-dom-bead--fly-in"
+      style="{{strungDomFlyInBead.wrapStyle}};"
+      wx:if="{{strungDomFlyInVisible}}"
+    >
+      <image
+        class="tray-dom-bead__image"
+        mode="aspectFit"
+        src="{{strungDomFlyInBead.imgUrl}}"
+        style="{{strungDomFlyInBead.imageStyle}};"
+      ></image>
+    </view>
+  </view>
+  <canvas
+    class="tray-layer tray-layer--share"
+    id="shareComposeCanvas"
+    style="{{shareCanvasStyle}};"
+    type="2d"
+  ></canvas>
+  <canvas
+    class="tray-layer tray-layer--photo-snapshot-compose"
+    id="photoSnapshotCanvas"
+    style="{{photoShadowCanvasStyle}};"
+    type="2d"
+  ></canvas>
+</view>

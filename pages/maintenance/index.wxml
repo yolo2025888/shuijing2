@@ -1,0 +1,24 @@
+<view class="maintenance-page">
+  <view class="maintenance-panel">
+    <image
+      class="maintenance-logo"
+      mode="aspectFit"
+      src="/assets/SLLOGO.svg"
+    ></image>
+    <text class="maintenance-title">{{title}}</text>
+    <text class="maintenance-message">{{message}}</text>
+    <text class="maintenance-meta" wx:if="{{expectedRecoverAt}}"
+      >{{expectedRecoverAt}}</text
+    >
+    <text class="maintenance-meta" wx:if="{{contactText}}"
+      >{{contactText}}</text
+    >
+    <button
+      bindtap="handleRetry"
+      class="maintenance-button"
+      loading="{{checking}}"
+    >
+      重新检查
+    </button>
+  </view>
+</view>

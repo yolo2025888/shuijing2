@@ -1,0 +1,91 @@
+.mini-bracelet-flat {
+  align-items: center;
+  display: -webkit-flex;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  opacity: 0;
+  position: relative;
+  transition: opacity 0.18s ease;
+}
+.mini-bracelet-flat--ready {
+  opacity: 1;
+}
+.mini-bracelet-flat__spinner {
+  position: relative;
+}
+.mini-bracelet-flat--snapshot-shadow .mini-bracelet-flat__spinner {
+  filter: none;
+}
+.mini-bracelet-flat__cast-shadow {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(44, 40, 37, 0.28) 0,
+    rgba(44, 40, 37, 0.16) 42%,
+    rgba(44, 40, 37, 0.06) 68%,
+    rgba(44, 40, 37, 0) 100%
+  );
+  border-radius: 50%;
+  filter: blur(5rpx);
+  height: 24%;
+  left: 50%;
+  opacity: 0.9;
+  pointer-events: none;
+  position: absolute;
+  top: 58%;
+  transform: translate3d(-50%, -50%, 0);
+  width: 78%;
+  z-index: 0;
+}
+.mini-bracelet-flat__spinner.is-animate {
+  animation: bracelet-flat-spin 30s linear infinite;
+}
+.mini-bracelet-flat__inner {
+  flex-shrink: 0;
+  position: relative;
+  transform-origin: center;
+  z-index: 1;
+}
+.mini-bracelet-flat__bead {
+  align-items: center;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+}
+.mini-bracelet-flat__rotator {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+.mini-bracelet-flat__image {
+  display: block;
+  position: absolute;
+}
+.mini-bracelet-flat__fallback {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #fdfcfb 0,
+    #ebd8c8 50%,
+    #d4bba0 100%
+  );
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+}
+@-webkit-keyframes bracelet-flat-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes bracelet-flat-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}

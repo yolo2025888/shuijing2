@@ -1,0 +1,35 @@
+<view
+  catchtap="handleCloseSupportQrPopup"
+  class="modal-layer modal-layer--center modal-layer--support-qr"
+  wx:if="{{supportQrPopup&&supportQrPopup.visible}}"
+>
+  <view class="modal-backdrop modal-backdrop--blur"></view>
+  <view catchtap="handleNoop" class="support-qr-popup">
+    <view class="support-qr-popup__head">
+      <text class="support-qr-popup__title"
+        >{{supportQrPopup.title||'添加 StoneLab 客服'}}</text
+      >
+      <text class="support-qr-popup__text" wx:if="{{supportQrPopup.text}}"
+        >{{supportQrPopup.text}}</text
+      >
+    </view>
+    <view class="support-qr-popup__image-wrap">
+      <image
+        class="support-qr-popup__image"
+        mode="aspectFit"
+        showMenuByLongpress="{{true}}"
+        src="{{supportQrPopup.imageUrl}}"
+        wx:if="{{supportQrPopup.imageUrl}}"
+      ></image>
+      <view class="support-qr-popup__fallback" wx:else>
+        <text class="support-qr-popup__fallback-text">QR</text>
+      </view>
+    </view>
+    <button
+      catchtap="handleCloseSupportQrPopup"
+      class="support-qr-popup__action"
+    >
+      {{supportQrPopup.buttonText||'我知道了'}}
+    </button>
+  </view>
+</view>

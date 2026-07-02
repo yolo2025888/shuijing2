@@ -1,0 +1,199 @@
+<view
+  catchtap="handleNoop"
+  class="tab-page cart-page"
+  wx:if="{{activeTab==='cart'}}"
+>
+  <scroll-view
+    scrollY
+    bindscroll="handleScroll"
+    class="tab-scroll cart-scroll"
+    showScrollbar="false"
+  >
+    <view
+      class="view-page cart-view"
+      style="margin-top: -{{shellPaddingTop}}px;"
+    >
+      <view
+        class="view-head"
+        style="padding-top: {{menuButtonTopPx}}px;--page-nav-h: {{menuButtonHeightPx}}px;"
+      >
+        <text class="view-title">购物车</text>
+        <text class="view-subtitle">在这里统一管理你准备下单的设计方案</text>
+      </view>
+      <view
+        class="cart-list cart-list--skeleton"
+        wx:if="{{cartHydrating&&!cartItems.length}}"
+      >
+        <view
+          class="cart-card cart-card--skeleton"
+          wx:for="{{[1,2]}}"
+          wx:key="*this"
+        >
+          <view class="cart-check">
+            <view class="cart-check__dot cart-check__dot--skeleton"></view>
+          </view>
+          <view class="cart-card__preview cart-card__preview--skeleton"></view>
+          <view class="cart-card__info">
+            <view class="cart-skeleton-line cart-skeleton-line--title"></view>
+            <view class="cart-skeleton-line cart-skeleton-line--meta"></view>
+            <view class="cart-skeleton-line cart-skeleton-line--price"></view>
+          </view>
+          <view class="cart-card__remove cart-card__remove--skeleton"></view>
+        </view>
+      </view>
+      <view class="cart-empty" wx:elif="{{!cartItems.length}}">
+        <image
+          class="cart-empty__icon"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/icons/nav-cart-muted.svg"
+        ></image>
+        <text class="cart-empty__title">购物车还是空的</text>
+        <text class="cart-empty__tip"
+          >去首页或灵感页挑选喜欢的方案，加入购物车后可在这里统一结算</text
+        >
+      </view>
+      <view class="cart-list" wx:else>
+        <view
+          catchtap="handleCartPreview"
+          class="cart-card"
+          data-id="{{item.id}}"
+          wx:for="{{cartItems}}"
+          wx:key="id"
+        >
+          <view
+            catchtap="handleToggleCartItem"
+            class="cart-check"
+            data-id="{{item.id}}"
+          >
+            <view
+              class="cart-check__dot {{item.checked?'cart-check__dot--checked':''}}"
+            >
+              <image
+                class="cart-check__icon"
+                mode="aspectFit"
+                src="{{assetUiBaseUrl}}/icons/check-white.svg"
+                wx:if="{{item.checked}}"
+              ></image>
+            </view>
+          </view>
+          <view class="cart-card__preview">
+            <view class="cart-card__preview-bg"></view>
+            <mini-bracelet-flat
+              beadSize="{{14}}"
+              containerSize="{{65}}"
+              materials="{{item.materialMap||item.materialSnapshot}}"
+              pattern="{{item.pattern}}"
+              wx:if="{{item.materialMap||item.materialSnapshot}}"
+            ></mini-bracelet-flat>
+            <image
+              class="cart-card__preview-image"
+              mode="aspectFit"
+              src="{{item.previewUrl||item.snapshotUrl}}"
+              wx:elif="{{item.previewUrl||item.snapshotUrl}}"
+            ></image>
+            <mini-bracelet-flat
+              beadSize="{{14}}"
+              containerSize="{{65}}"
+              pattern="{{item.pattern}}"
+              wx:else
+            ></mini-bracelet-flat>
+          </view>
+          <view class="cart-card__info">
+            <view class="cart-card__title-row">
+              <view class="cart-card__title-wrap">
+                <text class="cart-card__title">{{item.displayName}}</text>
+                <text
+                  class="cart-card__badge"
+                  wx:if="{{item.source_designer_id}}"
+                  >设计师款</text
+                >
+              </view>
+              <button
+                catchtap="handleRemoveCartItem"
+                class="cart-card__remove"
+                data-id="{{item.id}}"
+              >
+                <image
+                  class="cart-card__remove-icon"
+                  mode="aspectFit"
+                  src="{{assetUiBaseUrl}}/icons/close-thin-muted.svg"
+                ></image>
+              </button>
+            </view>
+            <text class="cart-card__meta"
+              >串长：{{item.perimCmText}}cm |
+              建议净手围：{{item.wristRangeText}}</text
+            >
+            <view
+              class="cart-card__services"
+              wx:if="{{item.selectedOptionSummary&&item.selectedOptionSummary.items&&item.selectedOptionSummary.items.length}}"
+            >
+              <text
+                class="cart-card__service"
+                wx:for="{{item.selectedOptionSummary.items}}"
+                wx:for-item="option"
+                wx:key="groupCode"
+                >{{option.groupTitle||option.groupCode}}：{{option.title}}</text
+              >
+            </view>
+            <text class="cart-card__price">
+              <text class="cart-card__price-unit">¥</text
+              >{{item.displayPriceText||item.priceText}}</text
+            >
+            <text
+              class="cart-card__price-sub"
+              wx:if="{{item.itemOptionAmount>0}}"
+              >含包装/证书 ¥{{item.itemOptionAmountText}}</text
+            >
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <view
+    class="cart-bar"
+    style="bottom: {{cartBarBottomPx}}px;"
+    wx:if="{{cartItems.length}}"
+  >
+    <view class="cart-bar__main">
+      <view catchtap="handleToggleAllCart" class="cart-bar__select">
+        <view
+          class="cart-check__dot {{checkedCartCount===cartItems.length&&cartItems.length?'cart-check__dot--checked':''}}"
+        >
+          <image
+            class="cart-check__icon cart-check__icon--sm"
+            mode="aspectFit"
+            src="{{assetUiBaseUrl}}/icons/check-white.svg"
+            wx:if="{{checkedCartCount===cartItems.length&&cartItems.length}}"
+          ></image>
+        </view>
+        <text class="cart-bar__select-text">全选</text>
+      </view>
+      <view class="cart-bar__divider"></view>
+      <view class="cart-bar__sum">
+        <text class="cart-bar__sum-label">合计</text>
+        <text class="cart-bar__sum-price">
+          <text class="cart-bar__sum-unit">¥</text
+          >{{checkedCartTotalText}}</text
+        >
+      </view>
+    </view>
+    <view class="cart-bar__btn-wrap">
+      <button
+        catchtap="handleStartCheckout"
+        class="cart-bar__btn {{checkedCartCount&&!checkoutLaunching?'':'cart-bar__btn--disabled'}}"
+        disabled="{{!checkedCartCount||checkoutLaunching}}"
+        loading="{{checkoutLaunching}}"
+      >
+        <text wx:if="{{checkoutLaunching}}">结算准备中...</text>
+        <text wx:else>结算({{checkedCartCount}})</text>
+      </button>
+      <button
+        catchtap="handleCheckoutLogin"
+        class="cart-bar__phone-login-btn"
+        disabled="{{!checkedCartCount||checkoutLaunching}}"
+        wx:if="{{!isLoggedIn}}"
+      ></button>
+    </view>
+  </view>
+</view>

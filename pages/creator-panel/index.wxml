@@ -1,0 +1,9 @@
+<view class="fallback-page">
+  <view class="fallback-panel">
+    <text class="fallback-title">{{title}}</text>
+    <text class="fallback-message">{{message}}</text>
+    <text class="fallback-detail" wx:if="{{detail}}">{{detail}}</text>
+    <button class="fallback-button" bindtap="handleBack">{{primaryText}}</button>
+    <button class="fallback-link" bindtap="handleHome">Home</button>
+  </view>
+</view>

@@ -1,0 +1,67 @@
+.mini-bracelet {
+  align-items: center;
+  display: -webkit-flex;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  opacity: 0;
+  position: relative;
+  transition: opacity 0.18s ease;
+}
+.mini-bracelet--ready {
+  opacity: 1;
+}
+.mini-bracelet__spinner {
+  position: relative;
+}
+.mini-bracelet__spinner.is-animate {
+  animation: bracelet-spin 30s linear infinite;
+}
+.mini-bracelet__inner {
+  flex-shrink: 0;
+  position: relative;
+  transform-origin: center;
+}
+.mini-bracelet__bead,
+.mini-bracelet__shadow {
+  align-items: center;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+}
+.mini-bracelet__image,
+.mini-bracelet__rotator {
+  height: 100%;
+  width: 100%;
+}
+.mini-bracelet__image--shadow {
+  opacity: 0.9;
+}
+.mini-bracelet__fallback {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #fdfcfb 0,
+    #ebd8c8 50%,
+    #d4bba0 100%
+  );
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+}
+@-webkit-keyframes bracelet-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes bracelet-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}

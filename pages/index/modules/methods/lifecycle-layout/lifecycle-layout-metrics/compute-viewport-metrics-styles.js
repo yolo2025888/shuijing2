@@ -1,0 +1,81 @@
+module.exports = {
+  buildViewportLayerStyles: function (t) {
+    var o = t.appBarTopPx,
+      a = t.viewportWindowWidth,
+      c = t.topMetaTopPx,
+      e = t.topMetaHeightPx,
+      p = t.trayTopPx,
+      n = t.trayLeftPx,
+      i = t.traySize,
+      x = t.undoTopPx,
+      r = t.undoRightPx,
+      h = t.actionTopPx,
+      l = t.layerSidePx,
+      y = t.searchTopPx,
+      g = (t.searchInsetLeftPx, t.searchInsetRightPx, t.mainTabsTopPx),
+      P = t.mainTabsHeightPx,
+      d = t.materialTopPx,
+      S = t.bottomDockPx,
+      f = t.appBarHeightPx,
+      L = [
+        "top:".concat(o, "px"),
+        "left:0",
+        "right:0",
+        "height:".concat(f, "px"),
+        "padding:0 ".concat(l, "px"),
+      ].join(";"),
+      s = [
+        "top:".concat(c, "px"),
+        "left:0",
+        "width:".concat(a, "px"),
+        "min-height:".concat(e, "px"),
+      ].join(";"),
+      j = ["top:".concat(c + Math.round(e / 2), "px")].join(";"),
+      T = [
+        "top:".concat(p, "px"),
+        "left:".concat(n, "px"),
+        "width:".concat(i, "px"),
+        "height:".concat(i, "px"),
+      ].join(";"),
+      m = ["width:".concat(i, "px"), "height:".concat(i, "px")].join(";"),
+      u = ["top:".concat(x, "px"), "right:".concat(r, "px")].join(";");
+    return {
+      appBarLayerStyle: L,
+      topMetaLayerStyle: s,
+      topGuideLayerStyle: j,
+      trayStageLayerStyle: T,
+      trayWrapperStyle: m,
+      floatingPhotoLayerStyle: [
+        "top:".concat(p + 12, "px"),
+        "right:".concat(r, "px"),
+      ].join(";"),
+      floatingUndoLayerStyle: u,
+      floatingBlindBoxLayerStyle: [
+        "top:".concat(x, "px"),
+        "left:".concat(l, "px"),
+      ].join(";"),
+      actionRowLayerStyle: [
+        "top:".concat(h, "px"),
+        "left:".concat(l, "px"),
+        "right:".concat(l, "px"),
+      ].join(";"),
+      searchRowLayerStyle: [
+        "top:".concat(y, "px"),
+        "left:".concat(l, "px"),
+        "right:".concat(l, "px"),
+      ].join(";"),
+      mainTabsLayerStyle: [
+        "top:".concat(g, "px"),
+        "left:0",
+        "right:0",
+        "height:".concat(P, "px"),
+      ].join(";"),
+      materialPanelLayerStyle: [
+        "top:".concat(d, "px"),
+        "left:0",
+        "right:0",
+        "bottom:".concat(S, "px"),
+      ].join(";"),
+    };
+  },
+};

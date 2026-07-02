@@ -1,0 +1,87 @@
+<view catchtap="handleCloseAddressManager" class="modal-layer" wx:if="{{showAddressManagerModal}}">
+    <view class="modal-backdrop"></view>
+    <view catchtap="handleNoop" class="sheet sheet--address-manager">
+        <view class="sheet-pill"></view>
+        <view class="order-modal-header">
+            <view class="header-spacer"></view>
+            <view class="header-title">地址管理</view>
+            <view catchtap="handleCloseAddressManager" class="header-close">
+                <image class="close-icon order-modal-header__close-icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/close-muted.svg"></image>
+            </view>
+        </view>
+        <scroll-view enableFlex scrollY class="address-manager-body" showScrollbar="false">
+            <view class="address-manager-section">
+                <view class="address-manager-section__head">
+                    <text class="address-manager-section__title">收货地址</text>
+                    <button catchtap="handleAddressCreateTap" class="address-manager-section__action" disabled="{{addressSubmitting}}" loading="{{addressSubmitting}}">新增地址</button>
+                </view>
+                <view class="address-manager-list address-manager-list--skeleton" wx:if="{{addressManagerLoading}}">
+                    <view class="address-manager-item address-manager-item--skeleton" wx:for="{{[1,2,3]}}" wx:key="*this">
+                        <view class="address-manager-item__copy">
+                            <view class="address-manager-item__head">
+                                <view class="address-manager-skeleton-line address-manager-skeleton-line--name"></view>
+                                <view class="address-manager-skeleton-line address-manager-skeleton-line--phone"></view>
+                            </view>
+                            <view class="address-manager-skeleton-line address-manager-skeleton-line--addr"></view>
+                        </view>
+                        <view class="address-manager-item__actions">
+                            <view class="address-manager-skeleton-line address-manager-skeleton-line--btn"></view>
+                            <view class="address-manager-skeleton-line address-manager-skeleton-line--btn"></view>
+                        </view>
+                    </view>
+                </view>
+                <view class="address-manager-empty" wx:elif="{{!(addressList&&addressList.length)}}">暂无收货地址，点击右上角“新增地址”开始添加</view>
+                <view class="address-manager-list" wx:else>
+                    <view class="address-manager-item {{selectedAddress&&selectedAddress.id===item.id?'address-manager-item--active':''}}" wx:for="{{addressList}}" wx:key="id">
+                        <view class="address-manager-item__copy">
+                            <view class="address-manager-item__head">
+                                <text class="address-manager-item__name">{{item.receiverName}}</text>
+                                <text class="address-manager-item__phone">{{item.receiverPhone}}</text>
+                                <text class="address-manager-item__badge" wx:if="{{item.isDefault}}">默认</text>
+                            </view>
+                            <text class="address-manager-item__addr" wx:if="{{item.fullAddress}}">{{item.fullAddress}}</text>
+                            <text class="address-manager-item__addr" wx:else>{{item.province}}{{item.city}}{{item.district}} {{item.street}} {{item.detail}}</text>
+                        </view>
+                        <view class="address-manager-item__actions">
+                            <button catchtap="handleAddressUseTap" class="address-manager-item__btn" data-id="{{item.id}}">使用</button>
+                            <button catchtap="handleAddressSetDefaultTap" class="address-manager-item__btn" data-id="{{item.id}}">设为默认</button>
+                            <button catchtap="handleAddressEditTap" class="address-manager-item__btn" data-id="{{item.id}}">编辑</button>
+                            <button catchtap="handleAddressDeleteTap" class="address-manager-item__btn address-manager-item__btn--danger" data-id="{{item.id}}">删除</button>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="sheet-scroll-spacer"></view>
+        </scroll-view>
+    </view>
+    <view catchtap="handleCloseAddressForm" class="address-form-modal-layer" wx:if="{{showAddressFormModal}}">
+        <view class="address-form-modal-backdrop"></view>
+        <view catchtap="handleNoop" class="white-card address-form-card address-form-card--dialog">
+            <view class="address-form-card__head">
+                <view>
+                    <text class="address-form-card__title">{{addressFormMode==='edit'?'编辑收货地址':'新增收货地址'}}</text>
+                    <text class="address-form-card__sub">{{addressFormMode==='edit'?'修改后点击保存即可更新地址信息':'填写完整信息后保存为新的收货地址'}}</text>
+                </view>
+                <view catchtap="handleCloseAddressForm" class="address-form-card__close">
+                    <image class="address-form-card__close-icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/close-muted.svg"></image>
+                </view>
+            </view>
+            <view class="address-form-grid">
+                <input bindinput="handleAddressFieldInput" class="address-form-input" data-field="receiverName" placeholder="收件人姓名" value="{{addressForm.receiverName}}"></input>
+                <input bindinput="handleAddressFieldInput" class="address-form-input" data-field="receiverPhone" placeholder="收件人手机号" value="{{addressForm.receiverPhone}}"></input>
+                <input bindinput="handleAddressFieldInput" class="address-form-input" data-field="province" placeholder="省份" value="{{addressForm.province}}"></input>
+                <input bindinput="handleAddressFieldInput" class="address-form-input" data-field="city" placeholder="城市" value="{{addressForm.city}}"></input>
+                <input bindinput="handleAddressFieldInput" class="address-form-input" data-field="district" placeholder="区县" value="{{addressForm.district}}"></input>
+                <input bindinput="handleAddressFieldInput" class="address-form-input" data-field="street" placeholder="街道" value="{{addressForm.street}}"></input>
+                <input bindinput="handleAddressFieldInput" class="address-form-input address-form-input--full" data-field="detail" placeholder="详细地址" value="{{addressForm.detail}}"></input>
+                <input bindinput="handleAddressFieldInput" class="address-form-input" data-field="postalCode" placeholder="邮政编码" value="{{addressForm.postalCode}}"></input>
+                <input bindinput="handleAddressFieldInput" class="address-form-input" data-field="tag" placeholder="地址标签（如：家、公司）" value="{{addressForm.tag}}"></input>
+            </view>
+            <view class="address-form-switch">
+                <text class="address-form-switch__label">设为默认收货地址</text>
+                <switch bindchange="handleAddressDefaultToggle" checked="{{addressForm.isDefault}}" color="#7a8b76"></switch>
+            </view>
+            <button catchtap="handleAddressSubmit" class="address-form-submit" disabled="{{addressSubmitting}}" loading="{{addressSubmitting}}">{{addressSubmitting?'保存中...':addressFormMode==='edit'?'保存地址修改':'保存收货地址'}}</button>
+        </view>
+    </view>
+</view>

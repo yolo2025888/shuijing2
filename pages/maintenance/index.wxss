@@ -1,0 +1,59 @@
+@import "/design-system/v2-tokens.wxss";
+.maintenance-page {
+  background: var(--v2-color-bg);
+  box-sizing: border-box;
+  color: var(--v2-color-text-main);
+  justify-content: center;
+  min-height: 100vh;
+  padding: 96rpx 56rpx calc(96rpx + env(safe-area-inset-bottom));
+}
+.maintenance-page,
+.maintenance-panel {
+  align-items: center;
+  display: -webkit-flex;
+  display: flex;
+}
+.maintenance-panel {
+  flex-direction: column;
+  max-width: 560rpx;
+  text-align: center;
+  width: 100%;
+}
+.maintenance-logo {
+  height: 168rpx;
+  margin-bottom: 38rpx;
+  width: 168rpx;
+}
+.maintenance-title {
+  color: var(--v2-color-text-main);
+  font-size: 38rpx;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.maintenance-message {
+  color: var(--v2-color-text-muted);
+  font-size: 26rpx;
+  line-height: 1.7;
+  margin-top: 22rpx;
+}
+.maintenance-meta {
+  color: var(--v2-color-text-muted);
+  font-size: 23rpx;
+  line-height: 1.5;
+  margin-top: 18rpx;
+}
+.maintenance-button {
+  background: var(--v2-color-text-main);
+  border-radius: 999rpx;
+  color: var(--v2-color-bg);
+  font-size: 25rpx;
+  font-weight: 600;
+  height: 88rpx;
+  line-height: 88rpx;
+  margin-top: 54rpx;
+  padding: 0 32rpx;
+  width: 100%;
+}
+.maintenance-button::after {
+  border: none;
+}

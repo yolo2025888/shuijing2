@@ -1,0 +1,47 @@
+<view
+  catchtap="handleCloseWebLoginConfirm"
+  class="modal-layer"
+  wx:if="{{webLoginConfirmVisible}}"
+>
+  <view class="modal-backdrop"></view>
+  <view catchtap="handleNoop" class="sheet sheet--profile-auth">
+    <view class="sheet-pill"></view>
+    <view class="sheet-head sheet-head--profile-auth">
+      <view class="sheet-head__spacer"></view>
+      <text class="sheet-head__title">登录网页版 StoneLab</text>
+      <button
+        catchtap="handleCloseWebLoginConfirm"
+        class="sheet-head__close sheet-head__close--secondary-tab"
+      >
+        <image
+          class="sheet-head__close-icon"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/icons/close-muted.svg"
+        ></image>
+      </button>
+    </view>
+    <view class="profile-auth-head">
+      <text class="profile-auth-desc"
+        >{{webLoginConfirmMessage||'确认后，电脑上的 StoneLab Web 将登录当前账号。'}}</text
+      >
+    </view>
+    <view class="profile-auth-actions">
+      <button
+        catchtap="handleCancelWebLoginFromScene"
+        class="profile-auth-btn profile-auth-btn--ghost"
+        disabled="{{webLoginConfirmLoading||webLoginConfirmStatus==='CONFIRMED'}}"
+        loading="{{webLoginConfirmLoading}}"
+      >
+        取消
+      </button>
+      <button
+        catchtap="handleConfirmWebLoginFromScene"
+        class="profile-auth-btn profile-auth-btn--primary"
+        disabled="{{webLoginConfirmLoading||webLoginConfirmStatus==='CONFIRMED'||webLoginConfirmStatus==='ERROR'}}"
+        loading="{{webLoginConfirmLoading}}"
+      >
+        {{webLoginConfirmStatus==='CONFIRMED'?'已确认':'确认登录'}}
+      </button>
+    </view>
+  </view>
+</view>

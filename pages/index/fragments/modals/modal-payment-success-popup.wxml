@@ -1,0 +1,29 @@
+<view
+  catchtap="handleClosePaymentSuccessPopup"
+  class="modal-layer modal-layer--center"
+  wx:if="{{showPaymentSuccessPopup}}"
+>
+  <view class="modal-backdrop modal-backdrop--blur"></view>
+  <view catchtap="handleNoop" class="payment-success-popup">
+    <view class="payment-success-popup__image-wrap">
+      <image
+        class="payment-success-popup__image"
+        mode="aspectFill"
+        src="{{paymentSuccessPopupImageUrl}}"
+        wx:if="{{paymentSuccessPopupImageUrl}}"
+      ></image>
+      <view class="payment-success-popup__fallback" wx:else>
+        <text class="payment-success-popup__fallback-text">支付成功</text>
+      </view>
+    </view>
+    <text class="payment-success-popup__text"
+      >{{paymentSuccessPopupText||'支付成功，感谢你的支持'}}</text
+    >
+    <button
+      catchtap="handleClosePaymentSuccessPopup"
+      class="payment-success-popup__action"
+    >
+      我知道了
+    </button>
+  </view>
+</view>

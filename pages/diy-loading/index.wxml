@@ -1,0 +1,14 @@
+<view class="diy-loading-page">
+  <view class="diy-loading-core">
+    <image
+      class="diy-loading-logo"
+      mode="aspectFit"
+      src="/assets/SLLOGO.svg"
+    ></image>
+    <view ariaLabel="loading" class="diy-loading-spinner"></view>
+    <text class="diy-loading-text">{{loadingText}}</text>
+    <text class="diy-loading-sub" wx:if="{{progressText}}"
+      >{{progressText}}</text
+    >
+  </view>
+</view>

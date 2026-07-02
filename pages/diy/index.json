@@ -1,0 +1,9 @@
+{
+  "navigationStyle": "custom",
+  "disableSwipeBack": false,
+  "usingComponents": {
+    "bracelet-tray": "/components/bracelet-tray/index",
+    "mini-bracelet": "/components/mini-bracelet/index",
+    "mini-bracelet-flat": "/components/mini-bracelet-flat/index"
+  }
+}

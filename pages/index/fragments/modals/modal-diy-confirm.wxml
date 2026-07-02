@@ -1,0 +1,42 @@
+<view
+  catchtap="handleDiyConfirmCancel"
+  class="modal-layer modal-layer--center"
+  wx:if="{{diyConfirmModal&&diyConfirmModal.visible}}"
+>
+  <view class="modal-backdrop modal-backdrop--blur"></view>
+  <view
+    catchtap="handleNoop"
+    class="diy-confirm-modal diy-confirm-modal--{{diyConfirmModal.tone||'default'}}"
+  >
+    <view class="diy-confirm-modal__mark">
+      <text>{{diyConfirmModal.iconText||'i'}}</text>
+    </view>
+    <view class="diy-confirm-modal__copy">
+      <text class="diy-confirm-modal__title">{{diyConfirmModal.title}}</text>
+      <text class="diy-confirm-modal__content"
+        >{{diyConfirmModal.content}}</text
+      >
+    </view>
+    <view class="diy-confirm-modal__actions">
+      <button
+        catchtap="handleDiyConfirmCancel"
+        class="diy-confirm-modal__btn diy-confirm-modal__btn--ghost"
+      >
+        {{diyConfirmModal.cancelText||'取消'}}
+      </button>
+      <button
+        catchtap="handleDiyConfirmSecondary"
+        class="diy-confirm-modal__btn diy-confirm-modal__btn--soft"
+        wx:if="{{diyConfirmModal.secondaryText}}"
+      >
+        {{diyConfirmModal.secondaryText}}
+      </button>
+      <button
+        catchtap="handleDiyConfirmPrimary"
+        class="diy-confirm-modal__btn diy-confirm-modal__btn--primary"
+      >
+        {{diyConfirmModal.confirmText||'确认'}}
+      </button>
+    </view>
+  </view>
+</view>

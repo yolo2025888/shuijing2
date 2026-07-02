@@ -1,0 +1,75 @@
+<view
+  catchtap="handleCloseOrderManager"
+  class="modal-layer"
+  wx:if="{{showOrderManagerModal}}"
+>
+  <view class="modal-backdrop"></view>
+  <view catchtap="handleNoop" class="sheet sheet--order-manager">
+    <view class="sheet-pill"></view>
+    <view class="order-modal-header">
+      <view class="header-spacer"></view>
+      <view class="header-title">我的订单</view>
+      <view catchtap="handleCloseOrderManager" class="header-close">
+        <image
+          class="close-icon order-modal-header__close-icon"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/icons/close-muted.svg"
+        ></image>
+      </view>
+    </view>
+    <include src="./order-manager/filters.wxml"></include>
+    <scroll-view
+      enableFlex
+      scrollY
+      class="order-manager-body"
+      showScrollbar="false"
+    >
+      <include src="./order-manager/list.wxml"></include>
+      <view class="sheet-scroll-spacer"></view>
+    </scroll-view>
+  </view>
+</view>
+<view
+  catchtap="handleCloseOrderManagerDetail"
+  class="modal-layer order-detail-modal-layer"
+  wx:if="{{showOrderManagerModal&&orderManagerActiveOrderNo}}"
+>
+  <view class="modal-backdrop order-detail-modal-backdrop"></view>
+  <view catchtap="handleNoop" class="sheet sheet--order-detail">
+    <view class="sheet-pill"></view>
+    <view class="order-modal-header">
+      <view class="header-spacer"></view>
+      <view class="header-title">订单详情</view>
+      <view catchtap="handleCloseOrderManagerDetail" class="header-close">
+        <image
+          class="close-icon order-modal-header__close-icon"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/icons/close-muted.svg"
+        ></image>
+      </view>
+    </view>
+    <scroll-view
+      enableFlex
+      scrollY
+      class="order-detail-modal-body"
+      showScrollbar="false"
+    >
+      <view
+        class="order-manager-empty"
+        wx:if="{{orderManagerDetailLoading&&!orderManagerDetail}}"
+        >订单详情加载中...</view
+      >
+      <view class="order-manager-empty" wx:elif="{{!orderManagerDetail}}">
+        <text>订单详情加载失败</text>
+        <button
+          catchtap="handleOrderManagerReloadDetail"
+          class="order-manager-retry"
+        >
+          重新加载
+        </button>
+      </view>
+      <include src="./order-manager/detail.wxml" wx:else></include>
+      <view class="sheet-scroll-spacer"></view>
+    </scroll-view>
+  </view>
+</view>

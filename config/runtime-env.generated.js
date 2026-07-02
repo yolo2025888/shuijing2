@@ -1,0 +1,68 @@
+module.exports = {
+  RUNTIME_ENV_OVERRIDES: {
+    develop: {
+      apiBaseUrl:
+        "https://nestjs-235195-9-1307595304.sh.run.tcloudbase.com/api",
+      transport: "http",
+      cloudEnvId: "stonlab-1g57aqhi841eebf4",
+      cloudRunService: "nestjs",
+      cloudRunBasePath: "/api",
+      assetCdnBaseUrl:
+        "https://stonlab-1g57aqhi841eebf4-1307595304.tcloudbaseapp.com",
+      enableRemoteBootstrap: !0,
+      enableRealLogin: !0,
+      enableRealOrderFlow: !0,
+      enableRemoteSchemeStorage: !0,
+      enableRemoteCartStorage: !0,
+      enableStandaloneDiyPage: !0,
+      enableStandaloneDiyPageHomeEntry: !0,
+      enableStandaloneDiyPageBottomNavEntry: !0,
+      enableStandaloneDiyPageProductApply: !0,
+      enableStandaloneDiyPageProfileEntry: !0,
+      enableStandaloneDiyPageShareEntry: !0,
+    },
+    trial: {
+      apiBaseUrl:
+        "https://stonlab-1g57aqhi841eebf4-1307595304.ap-shanghai.app.tcloudbase.com/container-nestjs/api",
+      transport: "http",
+      cloudEnvId: "stonlab-1g57aqhi841eebf4",
+      cloudRunService: "nestjs",
+      cloudRunBasePath: "/api",
+      assetCdnBaseUrl:
+        "https://stonlab-1g57aqhi841eebf4-1307595304.tcloudbaseapp.com",
+      enableRemoteBootstrap: !0,
+      enableRealLogin: !0,
+      enableRealOrderFlow: !0,
+      enableRemoteSchemeStorage: !0,
+      enableRemoteCartStorage: !0,
+      enableStandaloneDiyPage: !0,
+      enableStandaloneDiyPageHomeEntry: !0,
+      enableStandaloneDiyPageBottomNavEntry: !0,
+      enableStandaloneDiyPageProductApply: !0,
+      enableStandaloneDiyPageProfileEntry: !0,
+      enableStandaloneDiyPageShareEntry: !0,
+      allowHttpFallbackWhenContainerFail: !1,
+    },
+    release: {
+      apiBaseUrl:
+        "https://stonlab-1g57aqhi841eebf4-1307595304.ap-shanghai.app.tcloudbase.com/container-nestjs/api",
+      transport: "http",
+      cloudEnvId: "stonlab-1g57aqhi841eebf4",
+      cloudRunService: "nestjs",
+      cloudRunBasePath: "/api",
+      assetCdnBaseUrl:
+        "https://stonlab-1g57aqhi841eebf4-1307595304.tcloudbaseapp.com",
+      enableRemoteBootstrap: !0,
+      enableRealLogin: !0,
+      enableRealOrderFlow: !0,
+      enableRemoteSchemeStorage: !0,
+      enableRemoteCartStorage: !0,
+      enableStandaloneDiyPage: !0,
+      enableStandaloneDiyPageHomeEntry: !0,
+      enableStandaloneDiyPageBottomNavEntry: !0,
+      enableStandaloneDiyPageProductApply: !0,
+      enableStandaloneDiyPageProfileEntry: !0,
+      enableStandaloneDiyPageShareEntry: !0,
+    },
+  },
+};

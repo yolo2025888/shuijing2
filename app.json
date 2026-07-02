@@ -1,0 +1,29 @@
+{
+  "style": "v2",
+  "requiredPrivateInfos": ["chooseAddress"],
+  "componentFramework": "exparser",
+  "subPackages": [
+    { "root": "pages/designer-apply/", "pages": ["index"] },
+    { "root": "pages/distributor-apply/", "pages": ["index"] },
+    { "root": "pages/distributor-panel/", "pages": ["index"] },
+    { "root": "pages/creator-panel/", "pages": ["index"] },
+    { "root": "pages/creator-notifications/", "pages": ["index"] },
+    { "root": "pages/creator-work-submit/", "pages": ["index"] },
+    { "root": "pages/avatar-cropper/", "pages": ["index"] }
+  ],
+  "window": {
+    "navigationStyle": "custom",
+    "backgroundColor": "#FBFAF8",
+    "backgroundTextStyle": "dark",
+    "backgroundColorTop": "#FBFAF8",
+    "backgroundColorBottom": "#FBFAF8"
+  },
+  "pages": [
+    "pages/index/index",
+    "pages/designer/index",
+    "pages/product/index",
+    "pages/diy-loading/index",
+    "pages/diy/index",
+    "pages/maintenance/index"
+  ]
+}

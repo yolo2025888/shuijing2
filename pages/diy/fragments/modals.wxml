@@ -1,0 +1,16 @@
+<include
+  src="../../index/fragments/modals/modal-checkout-preview.wxml"
+></include>
+<include src="../../index/fragments/modals/modal-confirm-order.wxml"></include>
+<include src="../../index/fragments/modals/modal-guide.wxml"></include>
+<include src="../../index/fragments/modals/modal-content.wxml"></include>
+<include src="../../index/fragments/modals/modal-avatar-auth.wxml"></include>
+<include
+  src="../../index/fragments/modals/modal-web-login-confirm.wxml"
+></include>
+<include src="../../index/fragments/modals/modal-diy-confirm.wxml"></include>
+<include src="../../index/fragments/modals/modal-naming.wxml"></include>
+<include
+  src="../../index/fragments/modals/modal-payment-success-popup.wxml"
+></include>
+<include src="./modal-size-guide.wxml"></include>

@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "mini-bracelet-flat": "/components/mini-bracelet-flat/index"
+  }
+}

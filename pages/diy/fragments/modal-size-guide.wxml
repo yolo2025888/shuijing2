@@ -1,0 +1,18 @@
+<view
+  catchtap="handleCloseDiySizeGuidePopup"
+  class="modal-layer modal-layer--center diy-size-guide-layer"
+  wx:if="{{showDiySizeGuidePopup}}"
+>
+  <view class="modal-backdrop modal-backdrop--blur"></view>
+  <view
+    catchtap="handleNoop"
+    class="diy-size-guide-popup diy-size-guide-popup--image"
+  >
+    <image
+      class="diy-size-guide-popup__image"
+      lazyLoad="{{true}}"
+      mode="widthFix"
+      src="{{diySizeGuideImage}}"
+    ></image>
+  </view>
+</view>

@@ -1,0 +1,55 @@
+@import "/design-system/v2-tokens.wxss";
+.diy-loading-page {
+  background: var(--v2-color-bg);
+  min-height: 100vh;
+}
+.diy-loading-core,
+.diy-loading-page {
+  align-items: center;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: center;
+}
+.diy-loading-core {
+  flex-direction: column;
+  gap: 24rpx;
+}
+.diy-loading-logo {
+  height: 180rpx;
+  width: 180rpx;
+}
+.diy-loading-spinner {
+  animation: diy-loading-spin 0.9s linear infinite;
+  border: 4rpx solid var(--v2-color-overlay-light);
+  border-radius: 50%;
+  border-top-color: var(--v2-color-text-main);
+  height: 48rpx;
+  width: 48rpx;
+}
+.diy-loading-text {
+  color: var(--v2-color-text-main);
+  font-size: 26rpx;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.diy-loading-sub {
+  color: var(--v2-color-text-muted);
+  font-size: 22rpx;
+  line-height: 1.4;
+}
+@-webkit-keyframes diy-loading-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
+}
+@keyframes diy-loading-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
+}

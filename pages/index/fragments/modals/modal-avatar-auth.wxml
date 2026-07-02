@@ -1,0 +1,41 @@
+<view catchtap="handleCloseProfileAuthPrompt" class="modal-layer" wx:if="{{showProfileAuthPrompt}}">
+    <view class="modal-backdrop"></view>
+    <view catchtap="handleNoop" class="sheet sheet--profile-auth">
+        <view class="sheet-pill"></view>
+        <view class="sheet-head sheet-head--profile-auth">
+            <view class="sheet-head__spacer"></view>
+            <text class="sheet-head__title">{{isLoggedIn?'完善个人信息':'登录后继续'}}</text>
+            <button catchtap="handleCloseProfileAuthPrompt" class="sheet-head__close sheet-head__close--secondary-tab">
+                <image class="sheet-head__close-icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/close-muted.svg"></image>
+            </button>
+        </view>
+        <block wx:if="{{isLoggedIn}}">
+            <view class="profile-auth-head">
+                <text class="profile-auth-desc">用于头像展示与创作者信息展示，不会影响你的订单与支付安全</text>
+            </view>
+            <view class="profile-auth-body">
+                <button bindchooseavatar="handleChooseWechatAvatar" class="profile-auth-avatar" openType="chooseAvatar">
+                    <image class="profile-auth-avatar__image" mode="aspectFill" src="{{profileAuthAvatarUrl||profileAvatarUrl||profileAvatarFallback}}" wx:if="{{profileAuthAvatarUrl||profileAvatarUrl}}"></image>
+                    <view class="profile-auth-avatar__placeholder" wx:else>
+                        <image class="profile-auth-avatar__placeholder-icon" mode="aspectFill" src="{{profileAvatarFallback}}"></image>
+                    </view>
+                </button>
+                <text class="profile-auth-avatar-tip">点击头像可更换微信头像</text>
+                <input bindinput="handleProfileNicknameInput" class="profile-auth-input" maxlength="24" placeholder="请输入昵称" type="nickname" value="{{profileAuthNickname}}"></input>
+            </view>
+            <view class="profile-auth-actions">
+                <button catchtap="handleCloseProfileAuthPrompt" class="profile-auth-btn profile-auth-btn--ghost">稍后再说</button>
+                <button catchtap="handleAuthorizeWechatProfile" class="profile-auth-btn profile-auth-btn--primary" disabled="{{profileAuthSubmitting}}" loading="{{profileAuthSubmitting}}">保存信息</button>
+            </view>
+        </block>
+        <block wx:else>
+            <view class="profile-auth-head">
+                <text class="profile-auth-desc">使用当前微信身份登录或注册，订单、地址和设计会保存在当前微信下。</text>
+            </view>
+            <view class="profile-auth-actions">
+                <button catchtap="handleCloseProfileAuthPrompt" class="profile-auth-btn profile-auth-btn--ghost">取消</button>
+                <button catchtap="handleLogin" class="profile-auth-btn profile-auth-btn--primary">微信一键登录</button>
+            </view>
+        </block>
+    </view>
+</view>

@@ -1,0 +1,9 @@
+@import "/pages/index/index.wxss";
+.app-shell--diy-independent,
+.diy-independent-page,
+.mobile-shell--diy-independent {
+  min-height: 100vh;
+}
+.bead-grid--skeleton {
+  align-items: stretch;
+}

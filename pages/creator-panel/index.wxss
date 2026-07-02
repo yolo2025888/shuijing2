@@ -1,0 +1,45 @@
+.fallback-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 96rpx 40rpx 40rpx;
+  background: #fbfaf8;
+}
+
+.fallback-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding: 40rpx;
+  border: 1rpx solid rgba(40, 35, 30, 0.1);
+  border-radius: 8rpx;
+  background: #ffffff;
+}
+
+.fallback-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #2b2520;
+}
+
+.fallback-message,
+.fallback-detail {
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: #6f6258;
+}
+
+.fallback-button,
+.fallback-link {
+  margin: 8rpx 0 0;
+  border-radius: 8rpx;
+}
+
+.fallback-button {
+  background: #2b2520;
+  color: #ffffff;
+}
+
+.fallback-link {
+  background: transparent;
+  color: #6f6258;
+}

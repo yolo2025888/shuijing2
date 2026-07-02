@@ -1,0 +1,168 @@
+<view class="white-card order-detail-card" wx:if="{{orderManagerDetail}}">
+  <view class="order-detail-card__head">
+    <view>
+      <text class="order-detail-card__title">订单详情</text>
+      <text class="order-detail-card__subtitle"
+        >{{orderManagerDetail.orderNo}}</text
+      >
+    </view>
+    <text class="order-detail-card__status"
+      >{{orderManagerDetail.statusText}}</text
+    >
+  </view>
+  <view class="order-detail-card__price-row">
+    <text>应付金额：{{orderManagerDetail.payableAmountText}}</text>
+    <text>下单时间：{{orderManagerDetail.createdAtText}}</text>
+    <text wx:if="{{orderManagerDetail.payDeadlineAt}}"
+      >支付截止：{{orderManagerDetail.payDeadlineAtText}}</text
+    >
+  </view>
+  <view class="order-detail-card__address">
+    <text class="order-detail-card__section-title">收货地址</text>
+    <text
+      >{{orderManagerDetail.address.receiverName}}
+      {{orderManagerDetail.address.receiverPhone}}</text
+    >
+    <text>{{orderManagerDetail.address.fullAddress}}</text>
+  </view>
+  <view class="order-detail-card__items">
+    <text class="order-detail-card__section-title">商品信息</text>
+    <view
+      class="order-detail-item"
+      wx:for="{{orderManagerDetail.items}}"
+      wx:key="id"
+    >
+      <view class="order-detail-item__preview">
+        <image
+          class="order-detail-item__preview-image"
+          lazyLoad="{{true}}"
+          mode="aspectFit"
+          src="{{item.previewUrl}}"
+          wx:if="{{item.previewUrl}}"
+        ></image>
+        <mini-bracelet-flat
+          beadSize="{{11}}"
+          containerSize="{{38}}"
+          pattern="{{item.pattern}}"
+          wx:elif="{{item.pattern&&item.pattern.length}}"
+        ></mini-bracelet-flat>
+        <view class="order-detail-item__preview-placeholder" wx:else></view>
+      </view>
+      <view class="order-detail-item__copy">
+        <text class="order-detail-item__name">{{item.name}}</text>
+        <text class="order-detail-item__meta"
+          >{{item.totalCmText}} | {{item.beadCount}} 颗</text
+        >
+        <button
+          catchtap="handleOrderManagerReuseScheme"
+          class="order-detail-item__reuse"
+          data-id="{{item.id}}"
+          data-index="{{index}}"
+          disabled="{{orderManagerPaying||orderManagerCancelling||orderManagerConfirmingReceive||orderManagerApplyingAfterSale||orderManagerReusingScheme}}"
+          loading="{{orderManagerReusingScheme}}"
+          wx:if="{{item.canReuseScheme}}"
+        >
+          复用
+        </button>
+      </view>
+      <text class="order-detail-item__amount">{{item.itemAmountText}}</text>
+    </view>
+  </view>
+  <view
+    class="order-detail-card__shipment"
+    wx:if="{{orderManagerDetail.shipment}}"
+  >
+    <text class="order-detail-card__section-title">物流信息</text>
+    <text
+      >{{orderManagerDetail.shipment.logisticsCompany}}
+      {{orderManagerDetail.shipment.trackingNo}}</text
+    >
+    <text>{{orderManagerDetail.shipment.statusText}}</text>
+    <text wx:if="{{orderManagerDetail.shipment.shippedAtText!=='暂无'}}"
+      >发货时间：{{orderManagerDetail.shipment.shippedAtText}}</text
+    >
+    <text wx:if="{{orderManagerDetail.shipment.deliveredAtText!=='暂无'}}"
+      >签收时间：{{orderManagerDetail.shipment.deliveredAtText}}</text
+    >
+  </view>
+  <view
+    class="order-detail-card__after-sale"
+    wx:if="{{orderManagerDetail.afterSales&&orderManagerDetail.afterSales.length}}"
+  >
+    <text class="order-detail-card__section-title">售后记录</text>
+    <view wx:for="{{orderManagerDetail.afterSales}}" wx:key="id">
+      <text
+        >{{item.type}} | {{item.statusText}} | 已退
+        {{item.refundAmountText}}</text
+      >
+      <text wx:if="{{item.pendingRefundAmount>0}}">
+        | 处理中 {{item.pendingRefundAmountText}}</text
+      >
+    </view>
+  </view>
+  <view class="order-detail-card__timeline">
+    <text class="order-detail-card__section-title">状态记录</text>
+    <view wx:if="{{orderManagerStatusLogs&&orderManagerStatusLogs.length}}">
+      <view
+        class="order-status-log"
+        wx:for="{{orderManagerStatusLogs}}"
+        wx:key="id"
+      >
+        <view class="order-status-log__head">
+          <text class="order-status-log__to">{{item.toStatusText}}</text>
+          <text class="order-status-log__time">{{item.createdAtText}}</text>
+        </view>
+        <text class="order-status-log__reason" wx:if="{{item.reason}}"
+          >{{item.reason}}</text
+        >
+      </view>
+    </view>
+    <text class="order-detail-card__timeline-empty" wx:else>暂无状态记录</text>
+  </view>
+  <view class="order-detail-card__actions">
+    <button
+      catchtap="handleOrderManagerPayOrder"
+      class="order-detail-card__action order-detail-card__action--primary"
+      disabled="{{orderManagerPaying||orderManagerCancelling||orderManagerConfirmingReceive||orderManagerApplyingAfterSale}}"
+      loading="{{orderManagerPaying}}"
+      wx:if="{{orderManagerDetail.actions.canPay}}"
+    >
+      立即支付
+    </button>
+    <button
+      catchtap="handleOrderManagerCancelOrder"
+      class="order-detail-card__action"
+      disabled="{{orderManagerPaying||orderManagerCancelling||orderManagerConfirmingReceive||orderManagerApplyingAfterSale}}"
+      loading="{{orderManagerCancelling}}"
+      wx:if="{{orderManagerDetail.actions.canCancel}}"
+    >
+      取消订单
+    </button>
+    <button
+      catchtap="handleOrderManagerConfirmReceive"
+      class="order-detail-card__action order-detail-card__action--primary"
+      disabled="{{orderManagerPaying||orderManagerCancelling||orderManagerConfirmingReceive||orderManagerApplyingAfterSale}}"
+      loading="{{orderManagerConfirmingReceive}}"
+      wx:if="{{orderManagerDetail.actions.canConfirmReceive}}"
+    >
+      确认收货
+    </button>
+    <button
+      catchtap="handleOpenContactQrPopup"
+      class="order-detail-card__action"
+      disabled="{{orderManagerPaying||orderManagerCancelling||orderManagerConfirmingReceive||orderManagerApplyingAfterSale}}"
+      wx:if="{{orderManagerDetail.orderNo}}"
+    >
+      联系客服
+    </button>
+    <button
+      catchtap="handleOrderManagerApplyAfterSale"
+      class="order-detail-card__action"
+      disabled="{{orderManagerPaying||orderManagerCancelling||orderManagerConfirmingReceive||orderManagerApplyingAfterSale}}"
+      loading="{{orderManagerApplyingAfterSale}}"
+      wx:if="{{orderManagerDetail.actions.canAfterSale}}"
+    >
+      申请退款/售后
+    </button>
+  </view>
+</view>

@@ -1,0 +1,60 @@
+<view bindtap="handleRootTap" class="page-root">
+  <view class="loading-page" wx:if="{{!appLoaded}}">
+    <view class="diy-loading-core">
+      <image
+        class="diy-loading-logo"
+        mode="aspectFit"
+        src="{{assetUiBaseUrl}}/SLLOGO.svg"
+      ></image>
+      <view ariaLabel="loading" class="diy-loading-spinner"></view>
+      <text class="diy-loading-text"
+        >{{loadProgress<100?'正在加载 StoneLab...':'StoneLab 已就绪'}}</text
+      >
+      <text class="diy-loading-sub">{{loadProgress}}%</text>
+    </view>
+  </view>
+  <view class="app-shell" wx:else>
+    <view class="toast" wx:if="{{toastVisible}}">{{toast}}</view>
+    <view class="web-pay-entry-mask" wx:if="{{webPaySceneResolving}}">
+      <view class="web-pay-entry-card">
+        <image
+          class="web-pay-entry-logo"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/SLLOGO.svg"
+        ></image>
+        <view class="web-pay-entry-spinner"></view>
+        <text class="web-pay-entry-title">正在打开订单支付</text>
+        <text class="web-pay-entry-sub">正在确认登录状态与订单信息</text>
+      </view>
+    </view>
+    <view
+      class="diy-scene-mask diy-scene-mask--global"
+      wx:if="{{standaloneDiyEntryMaskVisible}}"
+    >
+      <view class="diy-scene-mask__core">
+        <image
+          class="diy-scene-mask__logo"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/SLLOGO.svg"
+        ></image>
+        <view class="diy-scene-mask__spinner"></view>
+        <text class="diy-scene-mask__title">正在进入 DIY...</text>
+        <text class="diy-scene-mask__sub">首屏正在合成，请稍候</text>
+      </view>
+    </view>
+    <view
+      class="page-container mobile-shell"
+      style="padding-top: {{shellPaddingTop}}px;padding-bottom: {{shellPaddingBottom}}px;"
+    >
+      <include src="./fragments/tab-design.wxml"></include>
+      <include src="./fragments/tab-cart.wxml"></include>
+      <include src="./fragments/tab-profile-v2.wxml"></include>
+      <include src="./fragments/modals.wxml"></include>
+      <include src="./fragments/bottom-nav.wxml"></include>
+    </view>
+  </view>
+  <canvas
+    canvasId="indexShareComposeCanvas"
+    style="position: fixed;left: -2400rpx;top: -2400rpx;width: 1000px;height: 800px;opacity: 0;pointer-events: none;"
+  ></canvas>
+</view>

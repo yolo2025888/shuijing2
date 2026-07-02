@@ -1,0 +1,242 @@
+<view class="checkout-overlay" wx:if="{{checkoutData}}">
+  <view class="checkout-header">
+    <view catchtap="handleCloseCheckout" class="checkout-header__back">
+      <image
+        class="checkout-header__back-icon"
+        mode="aspectFit"
+        src="{{assetUiBaseUrl}}/icons/back-dark.svg"
+      ></image>
+    </view>
+    <text class="checkout-header__title">结算预览</text>
+    <view class="checkout-header__spacer"></view>
+  </view>
+  <scroll-view enableFlex scrollY class="checkout-body" showScrollbar="false">
+    <view class="checkout-hero">
+      <view class="checkout-hero__glow"></view>
+      <view class="checkout-hero__bracelet">
+        <image
+          class="checkout-hero__bg"
+          mode="aspectFit"
+          src="{{checkoutData.bgUrl}}"
+          wx:if="{{checkoutData.bgUrl}}"
+        ></image>
+        <mini-bracelet-flat
+          beadSize="{{28}}"
+          containerSize="{{240}}"
+          materials="{{checkoutData.materialMap||checkoutData.materialSnapshot}}"
+          pattern="{{checkoutData.beadsOrPattern}}"
+        ></mini-bracelet-flat>
+        <image
+          class="checkout-hero__logo"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/SLLOGO.svg"
+        ></image>
+      </view>
+    </view>
+    <view class="checkout-sections">
+      <view class="white-card checkout-card">
+        <view class="checkout-card__head">
+          <text class="checkout-card__name">{{checkoutData.displayName}}</text>
+          <text class="checkout-card__price">
+            <text class="checkout-card__price-unit">¥</text
+            >{{checkoutData.priceText}}</text
+          >
+        </view>
+        <view class="checkout-card__metric">
+          <view>
+            <text class="checkout-card__metric-label">手串周长</text>
+            <text class="checkout-card__metric-value"
+              >{{checkoutData.perimCmText}} cm</text
+            >
+            <text class="checkout-card__metric-sub"
+              >建议净手围：{{checkoutData.wristRangeText}}</text
+            >
+          </view>
+          <button
+            catchtap="handleOpenGuide"
+            class="checkout-card__metric-btn"
+            data-tab="measure"
+          >
+            查看测量指南
+          </button>
+        </view>
+      </view>
+      <view
+        class="white-card checkout-card checkout-options-panel"
+        wx:if="{{checkoutData.itemOptionGroups&&checkoutData.itemOptionGroups.length}}"
+      >
+        <view
+          class="checkout-options-group"
+          wx:for="{{checkoutData.itemOptionGroups}}"
+          wx:for-item="group"
+          wx:key="groupCode"
+        >
+          <text class="checkout-options-group__title">{{group.title}}</text>
+          <view class="checkout-options-group__list">
+            <view
+              catchtap="handleCheckoutItemOptionTap"
+              class="checkout-option {{option.selected?'checkout-option--active':''}}"
+              data-group-code="{{group.groupCode}}"
+              data-option-code="{{option.optionCode}}"
+              wx:for="{{group.options}}"
+              wx:for-item="option"
+              wx:key="optionCode"
+            >
+              <view class="checkout-option__radio">
+                <view class="checkout-option__radio-core"></view>
+              </view>
+              <view class="checkout-option__copy">
+                <text class="checkout-option__title">{{option.title}}</text>
+                <text
+                  class="checkout-option__subtitle"
+                  wx:if="{{option.subtitle}}"
+                  >{{option.subtitle}}</text
+                >
+              </view>
+              <text
+                class="checkout-option__price checkout-option__price--free"
+                wx:if="{{option.isFree}}"
+              >免费</text>
+              <text class="checkout-option__price" wx:else>
+                ¥{{option.amountText}}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view
+        class="white-card checkout-card checkout-options-panel"
+        wx:elif="{{checkoutData.selectedOptionSummary&&checkoutData.selectedOptionSummary.items&&checkoutData.selectedOptionSummary.items.length}}"
+      >
+        <view class="checkout-options-group">
+          <text class="checkout-options-group__title">包装与证书</text>
+          <view class="checkout-options-group__list">
+            <view
+              class="checkout-option checkout-option--active"
+              wx:for="{{checkoutData.selectedOptionSummary.items}}"
+              wx:for-item="option"
+              wx:key="groupCode"
+            >
+              <view class="checkout-option__radio">
+                <view class="checkout-option__radio-core"></view>
+              </view>
+              <view class="checkout-option__copy">
+                <text class="checkout-option__title"
+                  >{{option.groupTitle||option.groupCode}}：{{option.title}}</text
+                >
+                <text
+                  class="checkout-option__subtitle"
+                  wx:if="{{option.subtitle}}"
+                  >{{option.subtitle}}</text
+                >
+              </view>
+              <text
+                class="checkout-option__price checkout-option__price--free"
+                wx:if="{{option.isFree}}"
+              >免费</text>
+              <text class="checkout-option__price" wx:else>
+                ¥{{option.amountText}}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="white-card checkout-card">
+        <text class="checkout-card__notice-title">下单说明</text>
+        <view class="checkout-card__notice-list">
+          <text class="checkout-card__notice-item">
+            <text class="checkout-card__notice-strong">关于天然材质：</text
+            >本店所售天然宝石、水晶、文玩等材质，因其天然属性，内部可能存在冰裂、棉絮、微小杂质或矿缺，表面可能存在微小打磨不平，此为大自然赋予的独特印记，属正常现象，非质量问题。追求完美的请慎重下单。</text
+          >
+          <text class="checkout-card__notice-item">
+            <text class="checkout-card__notice-strong">退换商品：</text
+            >因为是定制产品，制作前我们都会仔细检查，无质量问题不支持退换货。</text
+          >
+          <text class="checkout-card__notice-item">
+            <text class="checkout-card__notice-strong">手围确认：</text
+            >请以建议净手围区间与您的净腕数据进行核对。由于个人测量失误导致尺码不合的修改，需承担相应的来回运费。</text
+          >
+          <text class="checkout-card__notice-item">
+            <text class="checkout-card__notice-strong">制作时长：</text
+            >定制商品需要手工配货与制作，配货制作完成后可联系客服查看实物图，通常
+            1 天左右完成。</text
+          >
+          <text class="checkout-card__notice-item">
+            <text class="checkout-card__notice-strong">实物确认：</text
+            >支付后请联系客服确认实物图，不追加确认则默认 48 小时后发货。</text
+          >
+        </view>
+      </view>
+      <view class="white-card checkout-card">
+        <text class="checkout-card__section-title">构成清单</text>
+        <view class="checkout-structure-head">
+          <text class="checkout-structure-head__name">珠材</text>
+          <text class="checkout-structure-head__cell">规格</text>
+          <text class="checkout-structure-head__cell">单价</text>
+          <text class="checkout-structure-head__cell">数量</text>
+          <text class="checkout-structure-head__sum">小计</text>
+        </view>
+        <view class="checkout-structure-list">
+          <view
+            class="checkout-structure-item"
+            wx:for="{{checkoutData.structure}}"
+            wx:key="id"
+          >
+            <view class="checkout-structure-item__name">
+              <image
+                class="checkout-structure-item__thumb"
+                mode="aspectFit"
+                src="{{item.listImgUrl?item.listImgUrl:item.variants[0]}}"
+              ></image>
+              <text class="checkout-structure-item__text">{{item.name}}</text>
+            </view>
+            <text
+              class="checkout-structure-item__cell checkout-structure-item__cell--muted"
+              >{{item.sizeStr}}</text
+            >
+            <text
+              class="checkout-structure-item__cell checkout-structure-item__cell--muted"
+              >{{item.priceText}}</text
+            >
+            <text class="checkout-structure-item__cell">x {{item.count}}</text>
+            <text class="checkout-structure-item__sum">{{item.sumText}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <view class="checkout-footer">
+    <block wx:if="{{checkoutData.isPreview}}">
+      <button
+        catchtap="handleCheckoutAdjust"
+        class="checkout-footer__secondary"
+      >
+        重新调整
+      </button>
+      <button
+        catchtap="handleGoCheckoutFromPreview"
+        class="checkout-footer__action"
+      >
+        去结算
+      </button>
+    </block>
+    <block wx:else>
+      <view class="checkout-footer__sum">
+        <text class="checkout-footer__sum-label">合计</text>
+        <text class="checkout-footer__sum-price">
+          <text class="checkout-footer__sum-unit">¥</text
+          >{{checkoutData.payableText||checkoutData.priceText}}</text
+        >
+      </view>
+      <button
+        catchtap="handleCheckoutAdjust"
+        class="checkout-footer__secondary"
+      >
+        修改设计
+      </button>
+      <button catchtap="handleCheckoutConfirm" class="checkout-footer__action">
+        提交订单
+      </button>
+    </block>
+  </view>
+</view>

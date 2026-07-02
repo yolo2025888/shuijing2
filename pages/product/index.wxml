@@ -1,0 +1,287 @@
+<view class="product-page">
+  <view
+    class="product-nav"
+    style="top: {{navTopPx}}px;height: {{navHeightPx}}px;--page-nav-h: {{navHeightPx}}px;"
+  >
+    <view bindtap="handleBack" class="glass-btn product-nav__back">
+      <image
+        class="product-nav__back-icon"
+        mode="aspectFit"
+        src="/assets/icons/back-dark.svg"
+      ></image>
+    </view>
+    <view class="name-pill">
+      <text class="name-pill-txt"
+        >{{detail&&detail.name?detail.name:'产品详情'}}</text
+      >
+    </view>
+    <view class="product-nav__placeholder"></view>
+  </view>
+  <scroll-view class="product-scroll" scrollY="{{true}}" showScrollbar="false">
+    <view class="product-wrap" wx:if="{{frameReady}}">
+      <view class="product-hero">
+        <swiper
+          autoplay="{{false}}"
+          circular="{{detail.images.length>1}}"
+          class="product-hero__swiper"
+          indicatorDots="{{detail.images.length>1}}"
+          wx:if="{{detail&&detail.images&&detail.images.length}}"
+        >
+          <swiper-item wx:for="{{detail.images}}" wx:key="*this">
+            <view class="product-hero__slide">
+              <image
+                binderror="handleHeroImageError"
+                bindload="handleHeroImageLoaded"
+                class="product-hero__img"
+                data-src="{{item}}"
+                lazyLoad="{{index>0}}"
+                mode="aspectFit"
+                src="{{item}}"
+              ></image>
+            </view>
+          </swiper-item>
+        </swiper>
+        <view class="product-hero__placeholder" wx:else>
+          <image
+            binderror="handleHeroImageError"
+            bindload="handleHeroImageLoaded"
+            class="product-hero__img"
+            data-src="{{initialHeroPreviewUrl}}"
+            mode="aspectFit"
+            src="{{initialHeroPreviewUrl}}"
+            wx:if="{{initialHeroPreviewUrl}}"
+          ></image>
+          <view
+            class="product-hero__fallback"
+            wx:elif="{{detail&&detail.pattern&&detail.pattern.length}}"
+          >
+            <mini-bracelet-flat
+              beadSize="{{detail.beadMm||detail.bead_mm||11}}"
+              class="product-hero__fallback-bracelet"
+              containerSize="{{220}}"
+              pattern="{{detail.pattern||[]}}"
+              renderVersion="{{detail.previewRenderVersion||detail.preview_render_version||1}}"
+              snapshotShadow="{{false}}"
+            ></mini-bracelet-flat>
+            <image
+              class="product-hero__fallback-logo"
+              mode="aspectFit"
+              src="/assets/SLLOGO.svg"
+            ></image>
+          </view>
+          <block wx:else>
+            <view class="product-skeleton product-skeleton--hero"></view>
+            <image
+              class="product-hero__fallback-logo"
+              mode="aspectFit"
+              src="/assets/SLLOGO.svg"
+            ></image>
+          </block>
+        </view>
+      </view>
+      <view class="product-card">
+        <view class="product-head" wx:if="{{detail}}">
+          <view class="product-head__left">
+            <text class="product-head__title">{{detail.name||'Design'}}</text>
+            <text class="product-head__desc"
+              >{{detail.desc||detail.description||'应用该方案到 DIY 后可继续编辑。'}}</text
+            >
+          </view>
+          <text class="product-head__price"
+            >¥{{detail.priceText||detail.price||'--'}}</text
+          >
+        </view>
+        <view class="product-head product-head--skeleton" wx:else>
+          <view class="product-head__left">
+            <view class="product-skeleton product-skeleton--title"></view>
+            <view class="product-skeleton product-skeleton--desc"></view>
+          </view>
+          <view class="product-skeleton product-skeleton--price"></view>
+        </view>
+        <view
+          class="product-live-photo-section"
+          wx:if="{{productPhotosStatus!=='hidden'}}"
+        >
+          <view class="product-live-photo-head">
+            <text class="product-section__title product-live-photo-title"
+              >实拍图</text
+            >
+            <text
+              class="product-live-photo-count"
+              wx:if="{{!productPhotosLoading&&productPhotos.length}}"
+              >{{productPhotos.length}} 张</text
+            >
+          </view>
+          <text class="product-live-photo-desc"
+            >自然光拍摄，仅供材质质感参考</text
+          >
+          <view
+            class="product-live-photo-skeleton-row"
+            wx:if="{{productPhotosLoading}}"
+          >
+            <view class="product-skeleton product-live-photo-skeleton"></view>
+            <view class="product-skeleton product-live-photo-skeleton"></view>
+          </view>
+          <scroll-view
+            class="product-live-photo-scroll"
+            scrollX="{{true}}"
+            showScrollbar="false"
+            wx:elif="{{productPhotos.length}}"
+          >
+            <view class="product-live-photo-track">
+              <image
+                bindtap="previewProductPhoto"
+                class="product-live-photo-item"
+                data-index="{{index}}"
+                lazyLoad="{{index>0}}"
+                mode="aspectFill"
+                src="{{item}}"
+                wx:for="{{productPhotos}}"
+                wx:key="*this"
+              ></image>
+            </view>
+          </scroll-view>
+          <view class="product-live-photo-empty" wx:else>
+            <text
+              >{{productPhotosStatus==='error'?'实拍图加载失败，请稍后重试':'实拍图整理中'}}</text
+            >
+          </view>
+        </view>
+        <view class="product-section">
+          <text class="product-section__title">材质构成</text>
+          <view
+            class="product-structure-list"
+            wx:if="{{dataReady&&structureStatus==='ready'&&structure.length}}"
+          >
+            <view class="product-structure-head">
+              <text class="product-structure-head__name">珠材</text>
+              <text class="product-structure-head__cell">规格</text>
+              <text class="product-structure-head__cell">单价</text>
+              <text class="product-structure-head__cell">数量</text>
+              <text class="product-structure-head__sum">小计</text>
+            </view>
+            <view
+              class="product-structure-item"
+              wx:for="{{structure}}"
+              wx:key="id"
+            >
+              <view class="product-structure-item__name-cell">
+                <image
+                  class="product-structure-item__thumb"
+                  lazyLoad="{{index>=structureEagerThumbCount}}"
+                  mode="aspectFit"
+                  src="{{item.thumbUrl?item.thumbUrl:item.listImgUrl?item.listImgUrl:item.variants[0]}}"
+                ></image>
+                <text class="product-structure-item__name">{{item.name}}</text>
+              </view>
+              <text
+                class="product-structure-item__cell product-structure-item__cell--muted"
+                >{{item.sizeStr}}</text
+              >
+              <text
+                class="product-structure-item__cell product-structure-item__cell--muted"
+                >{{item.priceText}}</text
+              >
+              <text class="product-structure-item__cell">x {{item.count}}</text>
+              <text class="product-structure-item__sum">{{item.sumText}}</text>
+            </view>
+          </view>
+          <view class="product-structure-list" wx:else>
+            <view
+              class="product-structure-item product-structure-item--skeleton"
+            >
+              <view class="product-structure-item__left">
+                <view class="product-skeleton product-skeleton--thumb"></view>
+                <view class="product-skeleton product-skeleton--line"></view>
+              </view>
+              <view class="product-skeleton product-skeleton--count"></view>
+            </view>
+            <view
+              class="product-structure-item product-structure-item--skeleton"
+            >
+              <view class="product-structure-item__left">
+                <view class="product-skeleton product-skeleton--thumb"></view>
+                <view class="product-skeleton product-skeleton--line"></view>
+              </view>
+              <view class="product-skeleton product-skeleton--count"></view>
+            </view>
+          </view>
+        </view>
+        <view
+          bindtap="handleOpenDesigner"
+          class="product-designer"
+          data-creator-user-id="{{detail.sourceDesignerId||detail.source_designer_id||detail.creatorUserId||''}}"
+          data-designer-id="{{detail.designerId||detail.creatorId||'designer'}}"
+          data-designer-name="{{detail.authorName||detail.creatorName||detail.sourceDesignerName||'StoneLab.'}}"
+          wx:if="{{detail&&detail.usesDesignerIdentity}}"
+        >
+          <view class="product-designer__left">
+            <image
+              class="product-designer__avatar"
+              lazyLoad="{{true}}"
+              mode="aspectFill"
+              src="{{detail.authorAvatar||detail.sourceDesignerAvatar||detail.source_designer_avatar||detail.avatar||'https://images.unsplash.com/photo-1633058851349-55a9a188e338?w=100&h=100&fit=facearea&facepad=2'}}"
+              wx:if="{{designerIdentityReady}}"
+            ></image>
+            <view
+              class="product-skeleton product-skeleton--avatar"
+              wx:else
+            ></view>
+            <view class="product-designer__text">
+              <block wx:if="{{designerIdentityReady}}">
+                <text class="product-designer__name"
+                  >{{detail.authorName||detail.creatorName||detail.sourceDesignerName||'StoneLab.'}}</text
+                >
+                <text class="product-designer__role">设计师</text>
+              </block>
+              <block wx:else>
+                <view class="product-skeleton product-skeleton--line"></view>
+                <view class="product-skeleton product-skeleton--tiny"></view>
+              </block>
+            </view>
+          </view>
+          <text class="product-designer__cta">主页</text>
+        </view>
+        <view class="product-customer-author" wx:elif="{{detail}}">
+          <text class="product-customer-author__name"
+            >@{{detail.displayAuthorName||detail.authorName||detail.creatorName||'匿名作者'}}</text
+          >
+        </view>
+        <view class="product-designer" wx:else>
+          <view class="product-designer__left">
+            <view class="product-skeleton product-skeleton--avatar"></view>
+            <view class="product-designer__text">
+              <view class="product-skeleton product-skeleton--line"></view>
+              <view class="product-skeleton product-skeleton--tiny"></view>
+            </view>
+          </view>
+          <view class="product-skeleton product-skeleton--pill"></view>
+        </view>
+        <view class="product-scroll-bottom"></view>
+      </view>
+    </view>
+    <view class="product-empty" wx:elif="{{errorMessage&&!dataReady}}">
+      <text>{{errorMessage}}</text>
+    </view>
+    <view class="product-empty" wx:else>
+      <text>加载中...</text>
+    </view>
+  </scroll-view>
+  <view class="product-bottom-bar" wx:if="{{dataReady&&detail}}">
+    <button
+      class="product-bottom-btn product-bottom-btn--ghost product-bottom-btn--share"
+      openType="share"
+    >
+      <text>分享方案</text>
+    </button>
+    <button
+      bindtap="handleApplyPreset"
+      class="product-bottom-btn product-bottom-btn--primary"
+      disabled="{{applyLaunching}}"
+      loading="{{applyLaunching}}"
+    >
+      <text>使用该方案</text>
+    </button>
+  </view>
+  <canvas canvasId="productShareCanvas" class="product-share-canvas"></canvas>
+</view>

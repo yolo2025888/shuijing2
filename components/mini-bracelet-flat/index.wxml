@@ -1,0 +1,33 @@
+<view
+  class="mini-bracelet-flat {{renderReady?'mini-bracelet-flat--ready':''}} {{snapshotShadow?'mini-bracelet-flat--snapshot-shadow':''}}"
+  style="width: {{containerSize}}px;height: {{containerSize}}px;"
+>
+  <view class="mini-bracelet-flat__spinner {{animate?'is-animate':''}}">
+    <view
+      class="mini-bracelet-flat__cast-shadow"
+      wx:if="{{snapshotShadow}}"
+    ></view>
+    <view
+      class="mini-bracelet-flat__inner"
+      style="width: {{physicalSize}}px;height: {{physicalSize}}px;transform: scale({{scale}});"
+    >
+      <view
+        class="mini-bracelet-flat__bead"
+        style="{{item.wrapperStyle}};"
+        wx:for="{{beads}}"
+        wx:key="key"
+      >
+        <view class="mini-bracelet-flat__rotator" style="{{item.rotatorStyle}};">
+          <image
+            class="mini-bracelet-flat__image"
+            mode="aspectFit"
+            src="{{item.imgUrl}}"
+            style="{{item.imageStyle}};"
+            wx:if="{{item.imgUrl}}"
+          ></image>
+          <view class="mini-bracelet-flat__fallback" wx:else></view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

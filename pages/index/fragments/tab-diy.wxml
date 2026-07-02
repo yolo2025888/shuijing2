@@ -1,0 +1,200 @@
+<view bindtouchcancel="handleDiyEdgeSwipeCancel" bindtouchend="handleDiyEdgeSwipeEnd" bindtouchmove="handleDiyEdgeSwipeMove" bindtouchstart="handleDiyEdgeSwipeStart" catchtap="handleNoop" class="tab-page {{activeTab==='diy'?'':'tab-page--hidden'}} diy-page {{photoMode?'diy-page--photo':''}} {{isCompactScreen?'diy-page--compact':''}} {{isNarrowScreen?'diy-page--narrow':''}}">
+    <view class="photo-shot-page" wx:if="{{photoMode}}">
+        <view catchtap="handleExitPhotoMode" class="photo-shot-page__hit"></view>
+        <view class="photo-shot-header" style="padding-top: {{safeAreaTop}}px;">
+            <view class="photo-shot-brand">
+                <image class="photo-shot-brand__logo" mode="aspectFit" src="{{assetUiBaseUrl}}/SLLOGO.svg"></image>
+                <view class="photo-shot-brand__title-row">
+                    <text class="photo-shot-brand__title">灵感石验室</text>
+                    <button bindtap="handleShareCard" class="photo-shot-share" data-share-source="diy_photo" openType="share" wx:if="{{diyPhotoShareReady}}">
+                        <image class="pill-icon pill-icon--sm" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/share-upload-dark.svg"></image>
+                        <text>分享美图</text>
+                    </button>
+                    <button catchtap="handlePrepareDiyPhotoShare" class="photo-shot-share" disabled="{{diyPhotoSharePreparing}}" loading="{{diyPhotoSharePreparing}}" wx:else>
+                        <image class="pill-icon pill-icon--sm" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/share-upload-dark.svg"></image>
+                        <text>鍒嗕韩缇庡浘</text>
+                    </button>
+                </view>
+                <text class="photo-shot-brand__subtitle">UNDEFINED NATURE, UNDEFINED YOU.</text>
+                <view class="photo-shot-brand__line"></view>
+            </view>
+        </view>
+    </view>
+    <view class="diy-layout-shell {{isStandaloneDiy?'diy-layout-shell--standalone':''}}">
+        <view class="top-app-bar-layer" style="{{appBarLayerStyle}};" wx:if="{{!photoMode}}">
+            <view class="top-app-bar-layer__slot top-app-bar-layer__slot--left">
+                <view catchtap="handleDiyStandaloneBack" class="diy-standalone-back">
+                    <image class="diy-standalone-back__icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/back-dark.svg"></image>
+                </view>
+            </view>
+            <text class="top-app-bar-layer__title">灵感石验室</text>
+            <view class="top-app-bar-layer__slot top-app-bar-layer__slot--right"></view>
+        </view>
+        <view class="top-meta-layer top-info-bar diy-header-bar" style="{{topMetaLayerStyle}};" wx:if="{{!photoMode}}">
+            <view class="diy-header-bar__left">
+                <text class="diy-header-bar__price">¥ {{trayState.totalPriceText}}</text>
+                <text class="diy-header-bar__sep">|</text>
+                <text class="diy-header-bar__count">{{trayState.beadsCount}} 颗</text>
+            </view>
+            <view class="diy-header-bar__pill">
+                <text class="diy-header-bar__pill-text" wx:if="{{trayState.beadsCount<=0}}">建议净手围：待生成</text>
+                <text class="diy-header-bar__pill-text" wx:elif="{{userWrist!=null}}">{{wristMonitor.msg||'设置手围后可查看佩戴贴合度'}}</text>
+                <text class="diy-header-bar__pill-text" wx:else>建议净手围：{{wristMonitor.rangeTextCompact||wristMonitor.rangeText||'--'}}</text>
+            </view>
+        </view>
+        <button catchtap="handleOpenGuide" class="diy-header-guide-fixed" data-tab="tips" style="{{topGuideLayerStyle}};" wx:if="{{!photoMode}}">
+            <text class="diy-header-bar__guide-text">指南</text>
+            <image class="diy-header-bar__guide-icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/question-muted.svg"></image>
+        </button>
+        <view class="floating-photo-layer" style="{{floatingPhotoLayerStyle}};" wx:if="{{!photoMode&&trayState.isStrung&&trayState.beadsCount>0}}">
+            <view catchtap="handleEnterPhotoMode" class="photo-trigger">
+                <image class="pill-icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/magnifier-plus-green.svg"></image>
+            </view>
+        </view>
+        <view class="tray-stage-layer {{photoMode?'tray-stage-layer--photo':''}} {{standaloneDiyEntryMaskVisible||standaloneDiySceneMasked?'tray-stage-layer--entry-masked':''}} {{wristSettingOpen||guideModalOpen||namingPayload||diyConfirmModal||checkoutData||isCheckingOut||showDiyShareModal||showProfileShareModal||showAddressManagerModal||showOrderManagerModal||showContentModal||showPaymentSuccessPopup||webLoginConfirmVisible||showProfileAuthPrompt||supportQrPopup&&supportQrPopup.visible?'tray-stage-layer--modal-covered':''}}" style="{{trayStageLayerStyle}};">
+            <view class="diy-stage tray-wrapper" style="{{trayWrapperStyle}};">
+                <view class="tray-wrap {{photoMode?'tray-wrap--photo photo-stage':''}}" style="{{photoMode?trayPhotoStyle: trayBaseStyle}};">
+                    <bracelet-tray active="{{activeTab==='diy'&&(isStandaloneDiy||!standaloneDiyEntryMaskVisible&&!standaloneDiySceneMasked)}}" bgIndex="{{bgIndex}}" bindfeedback="handleTrayFeedback" bindstatechange="handleTrayStateChange" forceRegen="{{forceRegen}}" id="braceletTray" initPattern="{{currentPattern}}" initRenderPlan="{{currentRenderPlan}}" photoMode="{{photoMode}}" traySize="{{traySize}}"></bracelet-tray>
+                    <view class="tray-empty" wx:if="{{trayState.beadsCount===0}}">从下方素材栏添加第一颗珠子</view>
+                </view>
+            </view>
+        </view>
+        <view class="floating-undo-layer" style="{{floatingUndoLayerStyle}};" wx:if="{{!photoMode}}">
+            <view catchtap="handleUndo" class="circle-btn circle-btn--undo">
+                <image class="circle-btn__icon circle-btn__icon--sm" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/undo-dark.svg"></image>
+            </view>
+        </view>
+        <view class="floating-blindbox-layer" style="{{floatingBlindBoxLayerStyle}};" wx:if="{{!photoMode}}">
+            <view catchtap="handleBlindBox" class="circle-btn circle-btn--blindbox {{blindBoxPreparing||blindBoxWarming?'is-preparing':''}}">
+                <image class="circle-btn__icon circle-btn__icon--sm" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/blindbox-dark.svg"></image>
+                <view class="circle-btn__orbit" wx:if="{{blindBoxPreparing||blindBoxWarming}}"></view>
+            </view>
+        </view>
+        <view class="action-row-layer" style="{{actionRowLayerStyle}};" wx:if="{{!photoMode}}">
+            <view class="action-row action-row--spread tools-row">
+                <view class="action-cluster">
+                    <button catchtap="handleOpenWristSetting" class="wrist-link wrist-link--inline">
+                        <image class="wrist-link__icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/ruler-dark.svg"></image>
+                        <text>{{userWristText||'设置手围'}}</text>
+                    </button>
+                    <view catchtap="handleToggleBg" class="circle-btn">
+                        <image class="circle-btn__icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/bg-dark.svg"></image>
+                    </view>
+                    <view catchtap="handleClear" class="circle-btn">
+                        <image class="circle-btn__icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/trash-dark.svg"></image>
+                    </view>
+                    <view catchtap="handleSaveClick" class="circle-btn">
+                        <image class="circle-btn__icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/save-dark.svg"></image>
+                    </view>
+                </view>
+                <view class="action-right-cluster">
+                    <view catchtap="handleToggleStrung" class="string-btn {{trayState.isStrung?'string-btn--active':''}} {{!trayState.isStrung&&trayState.isOverMaxPerimeter?'string-btn--disabled':''}} {{strungPreparing?'string-btn--preparing':''}}">
+                        <view class="string-btn__spinner" wx:if="{{strungPreparing&&!trayState.isStrung&&!trayState.isOverMaxPerimeter}}"></view>
+                        <image class="string-btn__icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/string-white.svg" wx:elif="{{!trayState.isStrung&&!trayState.isOverMaxPerimeter}}"></image>
+                        <text>{{trayState.isStrung?'解除串珠':trayState.isOverMaxPerimeter?'超出周长':'收拢成串'}}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="search-row-layer" style="{{searchRowLayerStyle}};" wx:if="{{!photoMode}}">
+            <view class="panel-search search-checkout-row">
+                <view class="search-input">
+                    <image class="search-input__icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/search-muted.svg"></image>
+                    <input bindinput="handleSearchInput" class="search-input__field" placeholder="朱砂/葡萄石/南红玛瑙/天河石..." placeholderStyle="color:#B7BCB8;font-size:22rpx;font-weight:500;" value="{{searchQuery}}"></input>
+                </view>
+                <view catchtap="handleCheckoutClick" class="cart-cta {{checkoutPreparing?'cart-cta--loading':''}}">
+                    <image class="pill-icon pill-icon--sm" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/cart-white.svg"></image>
+                    <text>{{checkoutPreparing?'准备中...':'加入购物车'}}</text>
+                </view>
+            </view>
+        </view>
+        <view class="main-tabs-layer" style="{{mainTabsLayerStyle}};" wx:if="{{!photoMode}}">
+            <scroll-view enableFlex scrollX class="main-cats main-category-tabs category-tabs-row">
+                <view class="main-cats__row">
+                    <button catchtap="handleMainCategoryChange" class="main-cat {{mainCategory===item.id?'main-cat--active':''}} {{item.locked?'main-cat--locked':''}}" data-id="{{item.id}}" wx:for="{{mainCategories}}" wx:key="id">
+                        <text>{{item.label}}</text>
+                        <image class="inline-icon inline-icon--xs" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/lock-muted.svg" wx:if="{{item.locked}}"></image>
+                    </button>
+                </view>
+            </scroll-view>
+        </view>
+        <view class="material-panel-layer" style="{{materialPanelLayerStyle}};" wx:if="{{!photoMode}}">
+            <view class="panel-body content-body drawer-content">
+                <scroll-view scrollY bindscroll="handleScroll" class="sub-cats" data-scroll-role="sub">
+                    <view class="sub-cats__inner">
+                        <button catchtap="handleSubCategoryChange" class="sub-cat {{menuCategory===item.id?'sub-cat--active':''}} {{item.locked?'sub-cat--locked':''}}" data-id="{{item.id}}" wx:for="{{currentSubCategories}}" wx:key="id">
+                            <text>{{item.label}}</text>
+                            <image class="inline-icon inline-icon--sm" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/lock-muted.svg" wx:if="{{item.locked}}"></image>
+                        </button>
+                    </view>
+                </scroll-view>
+                <scroll-view scrollY bindscroll="handleScroll" bindscrolltolower="handleDiyMaterialsScrollLower" class="bead-grid-scroll" data-scroll-role="main">
+                    <view class="bead-grid bead-grid--skeleton" wx:if="{{diyMaterialsLoading&&!displayBeads.length}}">
+                        <view class="bead-card bead-card--group bead-card--skeleton" wx:for="{{[1,2,3,4,5,6]}}" wx:key="*this">
+                            <view class="bead-card__body">
+                                <view class="bead-card__media bead-card__media--skeleton"></view>
+                                <view class="bead-card__line bead-card__line--name"></view>
+                                <view class="bead-card__line bead-card__line--meta"></view>
+                            </view>
+                            <view class="bead-size-switch bead-size-switch--skeleton"></view>
+                        </view>
+                    </view>
+                    <view class="empty-grid" wx:elif="{{!displayBeads.length}}">
+                        <block wx:if="{{!searchQuery}}">
+                            <button catchtap="handleBlindBox" class="blindbox-btn {{blindBoxPreparing||blindBoxWarming?'is-preparing':''}}" loading="{{blindBoxPreparing||blindBoxWarming}}">
+                                <image class="pill-icon pill-icon--sm" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/blindbox-dark.svg"></image>
+                                <text>{{blindBoxPreparing?'准备中':'随机方案'}}</text>
+                            </button>
+                            <text class="empty-grid__tip">不知道从哪开始？优先随机加载一套设计师或优秀客订方案</text>
+                        </block>
+                        <block wx:else>
+                            <image class="empty-grid__icon" mode="aspectFit" src="{{assetUiBaseUrl}}/icons/question-muted.svg"></image>
+                            <text class="empty-grid__tip">此系列暂无珠子</text>
+                        </block>
+                    </view>
+                    <view class="bead-grid" wx:else>
+                        <view catchtap="handleBeadTap" class="bead-card bead-card--group" data-id="{{item.activeBead.id}}" wx:for="{{displayBeads}}" wx:key="name">
+                            <view class="bead-card__body">
+                                <view class="bead-card__media">
+                                    <image class="bead-card__shadow" mode="aspectFit" src="{{item.activeBead.displayCardImage||item.activeBead.cardImage}}" style="{{item.activeBead.listTransformStyle}};"></image>
+                                    <image class="bead-card__image" mode="aspectFit" src="{{item.activeBead.displayCardImage||item.activeBead.cardImage}}" style="{{item.activeBead.listTransformStyle}};"></image>
+                                </view>
+                                <text class="bead-card__name">{{item.activeBead.name}}</text>
+                                <text class="bead-card__fit" wx:if="{{item.activeBead.fitMsg}}">{{item.activeBead.fitMsg}}</text>
+                                <view class="bead-card__meta">
+                                    <text>{{item.activeBead.sizeStr}}</text>
+                                    <text>-</text>
+                                    <text>¥ {{item.activeBead.price}}</text>
+                                </view>
+                            </view>
+                            <view class="bead-size-switch" wx:if="{{item.items.length>1}}">
+                                <view catchtap="handleBeadTap" class="bead-size-switch__btn {{item.hasPrev?'':'bead-size-switch__btn--disabled'}}" data-action="switch_size" data-direction="-1" data-group-name="{{item.name}}">
+                                    <text>-</text>
+                                </view>
+                                <view class="bead-size-switch__divider"></view>
+                                <view catchtap="handleBeadTap" class="bead-size-switch__btn {{item.hasNext?'':'bead-size-switch__btn--disabled'}}" data-action="switch_size" data-direction="1" data-group-name="{{item.name}}">
+                                    <text>+</text>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </scroll-view>
+            </view>
+        </view>
+        <view class="layout-overlay-layer" wx:if="{{layoutOverlayEnabled&&layoutOverlayImageUrl}}">
+            <image class="layout-overlay-layer__image" mode="widthFix" src="{{layoutOverlayImageUrl}}" style="opacity: {{layoutOverlayOpacity/100}};"></image>
+            <view class="layout-overlay-layer__controls">
+                <text class="layout-overlay-layer__label">Overlay {{layoutOverlayOpacity}}%</text>
+                <slider activeColor="#B86B5D" backgroundColor="#E5E1D8" bindchange="handleLayoutOverlayOpacityChange" blockColor="#2C312E" blockSize="14" max="100" min="0" value="{{layoutOverlayOpacity}}"></slider>
+            </view>
+        </view>
+        <view class="diy-scene-mask {{standaloneDiySceneMasked?'':'diy-scene-mask--hidden'}}" wx:if="{{isStandaloneDiy}}">
+            <view class="diy-scene-mask__core">
+                <image class="diy-scene-mask__logo" mode="aspectFit" src="{{assetUiBaseUrl}}/SLLOGO.svg"></image>
+                <view class="diy-scene-mask__spinner"></view>
+                <text class="diy-scene-mask__title">正在进入 DIY...</text>
+                <text class="diy-scene-mask__sub">首屏正在合成，请稍候</text>
+            </view>
+        </view>
+    </view>
+</view>

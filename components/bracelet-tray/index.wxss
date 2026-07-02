@@ -1,0 +1,158 @@
+.tray-shell {
+  align-items: center;
+  display: -webkit-flex;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+  transition: -webkit-transform 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    -webkit-transform 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.tray-layer,
+.tray-shell {
+  background: transparent;
+  transform-origin: center center;
+}
+.tray-layer {
+  bottom: 0;
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: box-shadow 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.16s ease-out,
+    -webkit-transform 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    -webkit-filter 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    filter 0.56s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.16s ease-out;
+  transition: transform 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    filter 0.56s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.16s ease-out,
+    -webkit-transform 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    -webkit-filter 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+  width: 100%;
+}
+.tray-layer--bg {
+  border-radius: 50%;
+  z-index: 1;
+}
+.tray-layer--bead {
+  z-index: 3;
+}
+.tray-layer--bead-covered {
+  opacity: 0;
+}
+.tray-layer--dom-shadow {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s ease-out;
+  z-index: 3;
+}
+.tray-layer--photo-shadow {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0s linear,
+    -webkit-transform 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.56s cubic-bezier(0.25, 1, 0.5, 1), opacity 0s linear;
+  transition: transform 0.56s cubic-bezier(0.25, 1, 0.5, 1), opacity 0s linear,
+    -webkit-transform 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 2;
+}
+.tray-layer--dom-shadow-visible,
+.tray-layer--photo-shadow-visible {
+  opacity: 1;
+}
+.tray-dom-overlay {
+  bottom: 0;
+  display: block;
+  left: 0;
+  opacity: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform-origin: center center;
+  transition: opacity 0.16s ease-out,
+    -webkit-transform 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.16s ease-out;
+  transition: transform 0.56s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.16s ease-out,
+    -webkit-transform 0.56s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 4;
+}
+.tray-dom-overlay--visible {
+  opacity: 1;
+}
+.tray-dom-overlay--rotating {
+  transition: opacity 0.16s ease-out;
+}
+.tray-dom-overlay--layout-frozen,
+.tray-dom-overlay--layout-frozen .tray-dom-bead {
+  transition: none;
+}
+.tray-dom-bead {
+  pointer-events: none;
+  position: absolute;
+  transform-origin: center center;
+  transition: opacity 0.12s ease-out,
+    -webkit-transform 0.14s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.14s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.12s ease-out;
+  transition: transform 0.14s cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 0.12s ease-out,
+    -webkit-transform 0.14s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+.tray-dom-bead--hidden {
+  opacity: 0;
+}
+.tray-dom-bead--proxy {
+  transition: none;
+}
+.tray-dom-bead--fly-in .tray-dom-bead__image,
+.tray-dom-bead--proxy .tray-dom-bead__image {
+  filter: drop-shadow(3px 5px 3px rgba(0, 0, 0, 0.26));
+}
+.tray-dom-bead--fly-in {
+  transition: opacity 0.18s ease-out,
+    -webkit-transform 0.26s cubic-bezier(0.18, 0.9, 0.22, 1);
+  transition: transform 0.26s cubic-bezier(0.18, 0.9, 0.22, 1),
+    opacity 0.18s ease-out;
+  transition: transform 0.26s cubic-bezier(0.18, 0.9, 0.22, 1),
+    opacity 0.18s ease-out,
+    -webkit-transform 0.26s cubic-bezier(0.18, 0.9, 0.22, 1);
+}
+.tray-dom-bead__image {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  transform-origin: center center;
+  width: 100%;
+}
+.tray-dom-bead__image--settled {
+  filter: drop-shadow(1.5px 3px 2px rgba(0, 0, 0, 0.3))
+    drop-shadow(0.5px 1.5px 1px rgba(0, 0, 0, 0.14));
+}
+.tray-layer--photo-snapshot-compose,
+.tray-layer--share {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.tray-shell--photo {
+  overflow: visible;
+}
+.photo-stage {
+  backface-visibility: hidden;
+  isolation: isolate;
+  transform: translateZ(0);
+  will-change: transform, opacity, filter;
+}

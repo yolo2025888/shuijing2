@@ -1,0 +1,44 @@
+<scroll-view
+  enableFlex
+  scrollX
+  class="order-manager-filters"
+  showScrollbar="false"
+>
+  <view class="order-manager-filters__row">
+    <button
+      catchtap="handleOrderManagerFilterTap"
+      class="order-manager-filter {{orderManagerFilter==='all'?'order-manager-filter--active':''}}"
+      data-filter="all"
+    >
+      全部
+    </button>
+    <button
+      catchtap="handleOrderManagerFilterTap"
+      class="order-manager-filter {{orderManagerFilter==='pending_pay'?'order-manager-filter--active':''}}"
+      data-filter="pending_pay"
+    >
+      待支付
+    </button>
+    <button
+      catchtap="handleOrderManagerFilterTap"
+      class="order-manager-filter {{orderManagerFilter==='pending_ship'?'order-manager-filter--active':''}}"
+      data-filter="pending_ship"
+    >
+      待发货
+    </button>
+    <button
+      catchtap="handleOrderManagerFilterTap"
+      class="order-manager-filter {{orderManagerFilter==='pending_receive'?'order-manager-filter--active':''}}"
+      data-filter="pending_receive"
+    >
+      待收货
+    </button>
+    <button
+      catchtap="handleOrderManagerFilterTap"
+      class="order-manager-filter {{orderManagerFilter==='after_sale'?'order-manager-filter--active':''}}"
+      data-filter="after_sale"
+    >
+      售后
+    </button>
+  </view>
+</scroll-view>

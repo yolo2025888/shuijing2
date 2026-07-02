@@ -1,0 +1,491 @@
+<scroll-view
+  scrollY
+  bindscroll="handleScroll"
+  catchtap="handleNoop"
+  class="tab-scroll"
+  showScrollbar="false"
+  wx:if="{{activeTab==='home'}}"
+>
+  <view class="ns-home">
+    <view class="ns-hero">
+      <swiper
+        autoplay="{{true}}"
+        bindchange="onHomeSlideChange"
+        circular="{{true}}"
+        class="ns-hero__swiper"
+        current="{{homeCurrentSlide}}"
+        disableTouch="{{false}}"
+        duration="900"
+        interval="4500"
+        wx:if="{{!homeContentLoading}}"
+      >
+        <swiper-item
+          catchtap="handleHomeSlideTap"
+          data-target-path="{{item.targetPath}}"
+          wx:for="{{homeSlides}}"
+          wx:key="id"
+        >
+          <image
+            class="ns-hero__img"
+            lazyLoad="{{index>0}}"
+            mode="aspectFill"
+            src="{{item.image}}"
+          ></image>
+        </swiper-item>
+      </swiper>
+      <view class="ns-hero__media-skeleton" wx:else></view>
+      <view class="ns-hero__grad-top"></view>
+      <view class="ns-hero__grad-bottom"></view>
+      <view
+        class="ns-hero__header"
+        style="top: {{menuButtonTopPx}}px;height: {{menuButtonHeightPx}}px;"
+      >
+        <view class="ns-brand">
+          <image
+            class="ns-brand__logo"
+            mode="aspectFit"
+            src="{{assetUiBaseUrl}}/SLLOGO-hero.svg"
+          ></image>
+        </view>
+      </view>
+      <view class="ns-hero__content" wx:if="{{homeContentLoading}}">
+        <view class="ns-hero__pill">
+          <text class="ns-hero__sparkle">✦</text>
+          <text class="ns-hero__tag">灵感石实验室</text>
+        </view>
+        <text class="ns-hero__title">把灵感穿在手腕上</text>
+        <text class="ns-hero__desc"
+          >从材质、色彩与佩戴场景出发，找到适合你的专属手串方案。</text
+        >
+        <view bindtap="handleHomeOpenDiy" class="ns-hero__cta">
+          <text>开始定制</text>
+          <text class="ns-hero__cta-arrow">→</text>
+        </view>
+      </view>
+      <view class="ns-hero__content" wx:else>
+        <view class="ns-hero__pill">
+          <text class="ns-hero__sparkle">✦</text>
+          <text class="ns-hero__tag">{{homeSlides[homeCurrentSlide].tag}}</text>
+        </view>
+        <text
+          class="ns-hero__title"
+          style="{{homeSlides[homeCurrentSlide].titleFontSize?'font-size: ':''}}{{homeSlides[homeCurrentSlide].titleFontSize}}{{homeSlides[homeCurrentSlide].titleFontSize?'rpx;':''}}"
+          >{{homeSlides[homeCurrentSlide].title}}</text
+        >
+        <text
+          class="ns-hero__desc"
+          style="{{homeSlides[homeCurrentSlide].descFontSize?'font-size: ':''}}{{homeSlides[homeCurrentSlide].descFontSize}}{{homeSlides[homeCurrentSlide].descFontSize?'rpx;':''}}"
+          >{{homeSlides[homeCurrentSlide].desc}}</text
+        >
+        <view bindtap="handleHomeOpenDiy" class="ns-hero__cta">
+          <text>开始定制</text>
+          <text class="ns-hero__cta-arrow">→</text>
+        </view>
+      </view>
+      <view class="ns-hero__dots" wx:if="{{!homeContentLoading}}">
+        <view
+          bindtap="handleHomeGoToSlide"
+          class="ns-dot {{index===homeCurrentSlide?'ns-dot--active':''}}"
+          data-idx="{{index}}"
+          wx:for="{{homeSlides}}"
+          wx:key="id"
+        ></view>
+      </view>
+    </view>
+    <view ariaHidden="true" class="ns-blob-wrap">
+      <view class="ns-blob ns-blob--1"></view>
+      <view class="ns-blob ns-blob--2"></view>
+    </view>
+    <view class="ns-section ns-section--steps">
+      <view class="ns-section__head">
+        <text class="ns-section__title">定制工坊</text>
+        <view class="ns-step-dots">
+          <view
+            class="ns-step-dot {{index===homeActiveStep?'ns-step-dot--active':''}}"
+            wx:for="{{homeSteps}}"
+            wx:key="step"
+          ></view>
+        </view>
+      </view>
+      <scroll-view
+        class="ns-steps-scroll"
+        enhanced="{{true}}"
+        scrollLeft="{{homeStepScrollLeft}}"
+        scrollWithAnimation="{{true}}"
+        scrollX="{{true}}"
+        showScrollbar="false"
+      >
+        <view class="ns-steps-row">
+          <view
+            bindtap="handleHomeSetActiveStep"
+            class="ns-step-card {{index===homeActiveStep?'ns-step-card--active':'ns-step-card--inactive'}}"
+            data-idx="{{index}}"
+            wx:for="{{homeSteps}}"
+            wx:key="step"
+          >
+            <view
+              class="ns-step-icon {{index===homeActiveStep?'ns-step-icon--dark':'ns-step-icon--light'}}"
+            >
+              <text>{{item.iconTxt}}</text>
+            </view>
+            <view
+              class="ns-step-connector"
+              wx:if="{{index<homeSteps.length-1}}"
+            ></view>
+            <text class="ns-step-num">STEP {{item.step}}</text>
+            <text class="ns-step-title">{{item.title}}</text>
+            <text class="ns-step-desc">{{item.desc}}</text>
+          </view>
+          <view class="ns-steps-spacer"></view>
+        </view>
+      </scroll-view>
+    </view>
+    <view class="ns-artisan">
+      <image
+        class="ns-artisan__img"
+        lazyLoad="{{true}}"
+        mode="widthFix"
+        src="https://stonlab-1g57aqhi841eebf4-1307595304.tcloudbaseapp.com/assets/home/xcx0010.20260616.png"
+      ></image>
+    </view>
+    <view class="ns-designers">
+      <view class="ns-section__head ns-section__head--designer">
+        <view>
+          <text class="ns-section__title">驻场设计师</text>
+          <text class="ns-section__subtitle"
+            >从真实作品与佩戴场景出发，找到最适合你的灵感方案</text
+          >
+        </view>
+      </view>
+      <scroll-view
+        class="ns-designers-scroll"
+        scrollX="{{true}}"
+        showScrollbar="false"
+        wx:if="{{homeContentLoading}}"
+      >
+        <view class="ns-designers-row">
+          <view
+            class="ns-designer-card ns-designer-card--skeleton"
+            wx:for="{{[1,2,3]}}"
+            wx:key="*this"
+          >
+            <view
+              class="ns-designer-card__cover ns-designer-card__cover--skeleton"
+            ></view>
+            <view
+              class="ns-designer-card__avatar-wrap ns-designer-card__avatar-wrap--skeleton"
+            >
+              <view
+                class="ns-designer-card__avatar ns-designer-card__avatar--skeleton"
+              ></view>
+            </view>
+            <view class="ns-designer-card__body">
+              <view class="ns-skeleton-line ns-skeleton-line--name"></view>
+              <view class="ns-skeleton-line ns-skeleton-line--role"></view>
+              <view class="ns-designer-card__stats">
+                <view class="ns-stat ns-stat--skeleton">
+                  <view
+                    class="ns-skeleton-line ns-skeleton-line--stat-label"
+                  ></view>
+                  <view
+                    class="ns-skeleton-line ns-skeleton-line--stat-value"
+                  ></view>
+                </view>
+                <view class="ns-stat ns-stat--skeleton">
+                  <view
+                    class="ns-skeleton-line ns-skeleton-line--stat-label"
+                  ></view>
+                  <view
+                    class="ns-skeleton-line ns-skeleton-line--stat-value"
+                  ></view>
+                </view>
+              </view>
+              <view
+                class="ns-designer-card__cta ns-designer-card__cta--skeleton"
+              ></view>
+            </view>
+          </view>
+          <view class="ns-designers-spacer"></view>
+        </view>
+      </scroll-view>
+      <scroll-view
+        class="ns-designers-scroll"
+        scrollX="{{true}}"
+        showScrollbar="false"
+        wx:else
+      >
+        <view class="ns-designers-row">
+          <view
+            bindtap="handleHomeOpenDesigner"
+            class="ns-designer-card"
+            data-creator-user-id="{{item.creatorUserId||''}}"
+            data-designer-id="{{item.id}}"
+            data-designer-name="{{item.name}}"
+            data-source-designer-id="{{item.creatorUserId||''}}"
+            wx:for="{{homeDesigners}}"
+            wx:key="id"
+          >
+            <view class="ns-designer-card__cover">
+              <image
+                class="ns-designer-card__cover-img"
+                lazyLoad="{{true}}"
+                mode="aspectFill"
+                src="{{item.cover}}"
+              ></image>
+              <view class="ns-designer-card__cover-grad"></view>
+              <view class="ns-designer-card__rating">
+                <text>*</text>
+                <text>{{item.rating}}</text>
+              </view>
+            </view>
+            <view class="ns-designer-card__avatar-wrap">
+              <image
+                class="ns-designer-card__avatar"
+                lazyLoad="{{true}}"
+                mode="aspectFill"
+                src="{{item.avatar}}"
+              ></image>
+            </view>
+            <view class="ns-designer-card__body">
+              <view class="ns-designer-card__name-row">
+                <text class="ns-designer-card__name">{{item.name}}</text>
+                <text class="ns-designer-card__verified">v</text>
+              </view>
+              <text class="ns-designer-card__role">{{item.role}}</text>
+              <view class="ns-designer-card__stats">
+                <view class="ns-stat">
+                  <text class="ns-stat__label">已发布作品</text>
+                  <text class="ns-stat__value">{{item.works}}</text>
+                </view>
+                <view class="ns-stat">
+                  <text class="ns-stat__label">累计收入</text>
+                  <text class="ns-stat__value">{{item.income}}</text>
+                </view>
+              </view>
+              <view
+                catchtap="handleHomeOpenDesigner"
+                class="ns-designer-card__cta"
+                data-creator-user-id="{{item.creatorUserId||''}}"
+                data-designer-id="{{item.id}}"
+                data-designer-name="{{item.name}}"
+                data-source-designer-id="{{item.creatorUserId||''}}"
+              >
+                <text>查看主页</text>
+              </view>
+            </view>
+          </view>
+          <view class="ns-designers-spacer"></view>
+        </view>
+      </scroll-view>
+    </view>
+    <view catchtap="handleHomeOpenOrderFlow" class="ns-order-flow">
+      <image
+        class="ns-order-flow__image"
+        lazyLoad="{{true}}"
+        mode="widthFix"
+        src="{{homeOrderFlowPreviewImage}}"
+      ></image>
+      <text class="ns-order-flow__hint">点击查看完整流程</text>
+    </view>
+    <view class="ns-bottom-safe"></view>
+  </view>
+</scroll-view>
+<scroll-view
+  scrollY
+  bindscroll="handleScroll"
+  bindscrolltolower="handleInspirationReachEnd"
+  catchtap="handleNoop"
+  class="tab-scroll"
+  lowerThreshold="120"
+  showScrollbar="false"
+  wx:elif="{{activeTab==='inspiration'||activeTab==='design'}}"
+>
+  <view class="page">
+    <view
+      class="sticky-header"
+      style="padding-top: {{menuButtonTopPx}}px;--page-nav-h: {{menuButtonHeightPx}}px;"
+    >
+      <view class="header-row">
+        <text class="page-title">灵感</text>
+      </view>
+      <scroll-view
+        class="filters-scroll"
+        scrollX="{{true}}"
+        showScrollbar="false"
+      >
+        <view class="filters-row" wx:if="{{presetCategories.length}}">
+          <view
+            catchtap="handlePresetCategoryChange"
+            class="filter-chip {{presetCategory===item.id?'chip-active':'chip-default'}}"
+            data-id="{{item.id}}"
+            wx:for="{{presetCategories}}"
+            wx:key="id"
+          >
+            <text>{{item.label}}</text>
+          </view>
+        </view>
+        <view class="filters-row" wx:elif="{{presetCategoriesLoading}}">
+          <view
+            class="filter-chip filter-chip--skeleton"
+            wx:for="{{[1,2,3]}}"
+            wx:key="*this"
+          ></view>
+        </view>
+        <view class="filters-row" wx:else>
+          <view
+            catchtap="handlePresetCategoryChange"
+            class="filter-chip {{presetCategory==='designer'?'chip-active':'chip-default'}}"
+            data-id="designer"
+          >
+            <text>设计师款</text>
+          </view>
+          <view
+            catchtap="handlePresetCategoryChange"
+            class="filter-chip {{presetCategory==='customer'?'chip-active':'chip-default'}}"
+            data-id="customer"
+          >
+            <text>优秀客订</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    <view
+      class="inspiration-uniform-grid"
+      wx:if="{{visibleFilteredPresets.length>0&&(!inspirationFirstPageCategory||inspirationFirstPageCategory===presetCategory)}}"
+    >
+      <view
+        catchtap="handleOpenPresetDetail"
+        class="inspiration-uniform-card"
+        data-id="{{item.id}}"
+        wx:for="{{visibleFilteredPresets}}"
+        wx:key="id"
+      >
+        <view class="inspiration-uniform-media">
+          <block wx:if="{{item.previewUrl}}">
+            <image
+              binderror="handleInspirationPresetImageError"
+              bindload="handleInspirationPresetImageLoad"
+              class="inspiration-uniform-image"
+              data-display-src="{{item.displayPreviewUrl||item.previewUrl}}"
+              data-id="{{item.id}}"
+              data-src="{{item.previewUrl}}"
+              lazyLoad="{{index>1}}"
+              mode="aspectFit"
+              src="{{item.displayPreviewUrl||item.previewUrl}}"
+            ></image>
+            <view class="inspiration-uniform-mask"></view>
+          </block>
+          <view class="inspiration-uniform-render-fallback" wx:else>
+            <mini-bracelet-flat
+              beadSize="{{item.beadMm||item.bead_mm||11}}"
+              class="inspiration-uniform-render-fallback__bracelet"
+              containerSize="{{176}}"
+              pattern="{{item.pattern||[]}}"
+              renderVersion="{{item.previewRenderVersion||1}}"
+              snapshotShadow="{{false}}"
+            ></mini-bracelet-flat>
+            <image
+              class="inspiration-uniform-render-fallback__logo"
+              mode="aspectFit"
+              src="{{assetUiBaseUrl}}/SLLOGO.svg"
+            ></image>
+          </view>
+        </view>
+        <view class="inspiration-uniform-meta">
+          <view class="inspiration-uniform-foot">
+            <text class="inspiration-uniform-title"
+              >{{item.title||item.name||item.workTitle||item.work_title||'未命名作品'}}</text
+            >
+            <text class="inspiration-uniform-price"
+              wx:if="{{item.displayPriceText||item.priceText||item.price_text||item.snapshotPriceText||item.snapshot_price_text||item.displayPrice||item.priceLabel}}"
+              >{{item.displayPriceText||item.priceText||item.price_text||item.snapshotPriceText||item.snapshot_price_text||item.displayPrice||item.priceLabel}}</text
+            >
+            <text class="inspiration-uniform-price" wx:else
+              >¥{{item.price||item.snapshotPrice||'--'}}</text
+            >
+          </view>
+          <view
+            class="pin-author inspiration-uniform-author {{item.usesDesignerIdentity?'pin-author--with-quote':'pin-author--customer'}}"
+          >
+            <block wx:if="{{item.usesDesignerIdentity}}">
+              <image
+                binderror="handleInspirationAuthorAvatarError"
+                class="pin-author__avatar"
+                data-id="{{item.id}}"
+                lazyLoad="{{true}}"
+                mode="aspectFill"
+                src="{{item.authorAvatar||item.sourceDesignerAvatar||'https://images.unsplash.com/photo-1633058851349-55a9a188e338?w=100&h=100&fit=facearea&facepad=2'}}"
+              ></image>
+              <text class="pin-author__name"
+                >{{item.authorName||item.sourceDesignerName||'StoneLab.'}}</text
+              >
+              <text class="pin-author__quote">应用 {{item.viewCount||0}}</text>
+            </block>
+            <text class="pin-author__name pin-author__name--customer" wx:else
+              >@{{item.displayAuthorName||item.authorName||item.creatorName||'匿名作者'}}</text
+            >
+          </view>
+        </view>
+      </view>
+      <view class="inspiration-paging-indicator" wx:if="{{inspirationPaging}}">
+        <text class="inspiration-paging-indicator__text">正在加载更多...</text>
+      </view>
+    </view>
+    <view
+      class="inspiration-uniform-grid inspiration-uniform-grid--skeleton"
+      wx:elif="{{inspirationFirstPageCategory!==presetCategory||inspirationLoading||inspirationFirstPageStatus==='loading'||inspirationFirstPageStatus==='idle'}}"
+    >
+      <view class="inspiration-uniform-card">
+        <view
+          class="inspiration-uniform-media inspiration-uniform-media--skeleton"
+        ></view>
+        <view class="inspiration-uniform-meta">
+          <view class="pin-line pin-line--title"></view>
+          <view class="pin-line pin-line--meta"></view>
+        </view>
+      </view>
+      <view class="inspiration-uniform-card">
+        <view
+          class="inspiration-uniform-media inspiration-uniform-media--skeleton"
+        ></view>
+        <view class="inspiration-uniform-meta">
+          <view class="pin-line pin-line--title"></view>
+          <view class="pin-line pin-line--meta"></view>
+        </view>
+      </view>
+      <view class="inspiration-uniform-card">
+        <view
+          class="inspiration-uniform-media inspiration-uniform-media--skeleton"
+        ></view>
+        <view class="inspiration-uniform-meta">
+          <view class="pin-line pin-line--title"></view>
+          <view class="pin-line pin-line--meta"></view>
+        </view>
+      </view>
+      <view class="inspiration-uniform-card">
+        <view
+          class="inspiration-uniform-media inspiration-uniform-media--skeleton"
+        ></view>
+        <view class="inspiration-uniform-meta">
+          <view class="pin-line pin-line--title"></view>
+          <view class="pin-line pin-line--meta"></view>
+        </view>
+      </view>
+    </view>
+    <view
+      bindtap="handleRetryInspirationFirstPage"
+      class="home-empty"
+      wx:elif="{{inspirationFirstPageStatus==='error'&&inspirationFirstPageCategory===presetCategory}}"
+      >加载失败，点击重试</view
+    >
+    <view
+      class="home-empty"
+      wx:elif="{{inspirationFirstPageStatus==='empty'&&inspirationFirstPageCategory===presetCategory}}"
+      >暂无灵感内容</view
+    >
+    <view bindtap="handleRetryInspirationFirstPage" class="home-empty" wx:else
+      >内容暂不可用，点击重试</view
+    >
+    <view style="height: 180rpx;"></view>
+  </view>
+</scroll-view>

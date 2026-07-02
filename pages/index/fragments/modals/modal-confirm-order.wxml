@@ -1,0 +1,164 @@
+<view
+  catchtap="handleCloseConfirmOrder"
+  class="modal-layer"
+  wx:if="{{isCheckingOut}}"
+>
+  <view class="modal-backdrop"></view>
+  <view catchtap="handleNoop" class="sheet sheet--order">
+    <view class="sheet-head sheet-head--order">
+      <view class="sheet-head__spacer"></view>
+      <text class="sheet-head__title">确认订单</text>
+      <button
+        catchtap="handleCloseConfirmOrder"
+        class="sheet-head__close sheet-head__close--order"
+      >
+        <image
+          class="sheet-head__close-icon"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/icons/close-muted.svg"
+        ></image>
+      </button>
+    </view>
+    <view class="sheet-body">
+      <view catchtap="handleChooseAddress" class="address-card">
+        <view
+          class="address-card__copy"
+          wx:if="{{selectedAddress&&selectedAddress.id}}"
+        >
+          <text class="address-card__name">
+            {{selectedAddress.receiverName||'未命名收货人'}}
+            <text class="address-card__phone">
+              {{selectedAddress.receiverPhone||''}}</text
+            >
+          </text>
+          <text class="address-card__addr" wx:if="{{selectedAddress.fullAddress}}">
+            {{selectedAddress.fullAddress}}
+          </text>
+          <text class="address-card__addr" wx:else>
+            {{selectedAddress.province}}{{selectedAddress.city}}{{selectedAddress.district}}
+            {{selectedAddress.street}} {{selectedAddress.detail}}
+          </text>
+        </view>
+        <view
+          class="address-card__copy address-card__copy--skeleton"
+          wx:elif="{{checkoutAddressResolving}}"
+        >
+          <view class="address-card__line address-card__line--name"></view>
+          <view class="address-card__line address-card__line--addr"></view>
+        </view>
+        <view class="address-card__copy address-card__copy--empty" wx:else>
+          <text class="address-card__name">请选择收货地址</text>
+          <text class="address-card__addr"
+            >填写完整收货信息，支付后可在订单中心查看物流与售后</text
+          >
+          <button
+            catchtap="handleOpenAddressManager"
+            class="address-card__create-btn"
+          >
+            新增地址
+          </button>
+        </view>
+        <image
+          class="address-card__icon"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/icons/chevron-right-dark.svg"
+        ></image>
+      </view>
+      <view
+        class="checkout-options-panel"
+        wx:if="{{checkoutOptionGroups&&checkoutOptionGroups.length}}"
+      >
+        <view
+          class="checkout-options-group"
+          wx:for="{{checkoutOptionGroups}}"
+          wx:for-item="group"
+          wx:key="groupCode"
+        >
+          <text class="checkout-options-group__title">{{group.title}}</text>
+          <view class="checkout-options-group__list">
+            <view
+              catchtap="handleCheckoutOptionTap"
+              class="checkout-option {{option.selected?'checkout-option--active':''}}"
+              data-group-code="{{group.groupCode}}"
+              data-option-code="{{option.optionCode}}"
+              wx:for="{{group.options}}"
+              wx:for-item="option"
+              wx:key="optionCode"
+            >
+              <view class="checkout-option__radio">
+                <view class="checkout-option__radio-core"></view>
+              </view>
+              <view class="checkout-option__copy">
+                <text class="checkout-option__title">{{option.title}}</text>
+                <text
+                  class="checkout-option__subtitle"
+                  wx:if="{{option.subtitle}}"
+                  >{{option.subtitle}}</text
+                >
+              </view>
+              <text
+                class="checkout-option__price checkout-option__price--free"
+                wx:if="{{option.isFree}}"
+              >免费</text>
+              <text class="checkout-option__price" wx:else>
+                ¥{{option.amountText}}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="order-summary-row">
+        <text class="order-summary-row__label"
+          >商品小计 ({{checkedCartCount}}件)</text
+        >
+        <text class="order-summary-row__value"
+          >¥{{checkoutGoodsAmountText}}</text
+        >
+      </view>
+      <view class="order-summary-row">
+        <text class="order-summary-row__label">包装与证书</text>
+        <text class="order-summary-row__value"
+          >¥{{checkoutServiceAmountText}}</text
+        >
+      </view>
+      <view class="order-summary-row">
+        <text class="order-summary-row__label">配送服务</text>
+        <view class="order-summary-row__right">
+          <text
+            class="order-summary-row__value order-summary-row__value--green"
+            wx:if="{{checkoutFreightAmountText==='0.0'||checkoutFreightAmountText==='0.00'}}"
+          >包邮</text>
+          <text class="order-summary-row__value" wx:else>
+            ¥{{checkoutFreightAmountText}}
+          </text>
+          <text class="order-summary-row__sub"
+            >预计 {{deliveryEtaText}} 天送达</text
+          >
+        </view>
+      </view>
+    </view>
+    <view class="sheet-foot">
+      <button
+        catchtap="handleConfirmPayment"
+        class="wechat-pay-btn"
+        disabled="{{isConfirmPaying||checkoutOptionRefreshing}}"
+        loading="{{isConfirmPaying||checkoutOptionRefreshing}}"
+      >
+        <image
+          class="wechat-pay-btn__icon"
+          mode="aspectFit"
+          src="{{assetUiBaseUrl}}/icons/wechat-white.svg"
+        ></image>
+        <text wx:if="{{checkoutOptionRefreshing}}">正在刷新价格...</text>
+        <text wx:elif="{{isConfirmPaying&&paymentFlowState==='INVOKING_WECHAT'}}"
+          >正在调起微信支付...</text
+        >
+        <text wx:elif="{{isConfirmPaying&&paymentFlowState==='FINALIZING'}}"
+          >正在确认支付结果...</text
+        >
+        <text wx:elif="{{isConfirmPaying}}">支付处理中...</text>
+        <text wx:else>微信支付 ¥{{checkedCartTotalText}}</text>
+      </button>
+    </view>
+  </view>
+</view>

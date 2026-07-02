@@ -1,0 +1,129 @@
+<view class="designer-page">
+  <scroll-view class="designer-scroll" scrollY="{{true}}" showScrollbar="false">
+    <view class="hero-section">
+      <image
+        class="hero-cover hero-cover__image"
+        lazyLoad="{{true}}"
+        mode="aspectFill"
+        src="{{designer.cover}}"
+        wx:if="{{designer.cover}}"
+      ></image>
+      <block wx:else>
+        <view class="hero-cover hero-cover--plain"></view>
+        <image
+          class="hero-cover-logo"
+          mode="aspectFit"
+          src="/assets/SLLOGO.svg"
+        ></image>
+      </block>
+      <view class="hero-mask"></view>
+      <view
+        class="designer-nav"
+        style="top: {{navTopPx}}px;height: {{navHeightPx}}px;--page-nav-h: {{navHeightPx}}px;"
+      >
+        <view bindtap="goBack" class="glass-btn designer-nav__back">
+          <image
+            class="designer-nav__back-icon"
+            mode="aspectFit"
+            src="/assets/icons/back-dark.svg"
+          ></image>
+        </view>
+        <text class="nav-title">{{designerName}}</text>
+        <view class="glass-btn nav-btn--ghost"></view>
+      </view>
+      <view class="hero-profile">
+        <image
+          class="hero-profile__avatar"
+          lazyLoad="{{true}}"
+          mode="aspectFill"
+          src="{{designer.avatar}}"
+          wx:if="{{designer.avatar}}"
+        ></image>
+        <view
+          class="hero-profile__avatar hero-profile__avatar--empty"
+          wx:else
+        ></view>
+        <view class="hero-profile__meta">
+          <text class="hero-profile__name">{{designer.name}}</text>
+          <text class="hero-profile__tag">{{designer.role||'共创设计师'}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="content-card">
+      <view class="metrics-row">
+        <view class="metric-item">
+          <text class="metric-item__value"
+            >{{designer.stats[0]&&designer.stats[0].value||designer.works&&designer.works.length||0}}</text
+          >
+          <text class="metric-item__label">已发布作品</text>
+        </view>
+        <view class="metric-item">
+          <text class="metric-item__value"
+            >{{designer.stats[1]&&designer.stats[1].value||0}}</text
+          >
+          <text class="metric-item__label">引用数量</text>
+        </view>
+      </view>
+      <view class="bio-block" wx:if="{{designer.bio}}">
+        <text class="bio-block__text">{{designer.bio}}</text>
+      </view>
+      <view class="works-section">
+        <view class="works-header">
+          <text class="works-title">作品</text>
+          <text class="works-count">{{designer.works.length}} 件</text>
+        </view>
+        <view
+          class="works-grid"
+          wx:if="{{designer.works&&designer.works.length}}"
+        >
+          <view
+            bindtap="openWork"
+            class="work-item"
+            data-preset-id="{{item.presetId||''}}"
+            data-work-id="{{item.id}}"
+            wx:for="{{designer.works}}"
+            wx:key="id"
+          >
+            <view class="work-img-wrap">
+              <image
+                binderror="handleWorkImageError"
+                class="work-img"
+                data-preset-id="{{item.presetId||item.id||''}}"
+                data-src="{{item.previewUrl||item.img}}"
+                lazyLoad="{{true}}"
+                mode="aspectFit"
+                src="{{item.previewUrl||item.img}}"
+                wx:if="{{item.previewUrl||item.img}}"
+              ></image>
+              <view class="work-img-fallback" wx:else>
+                <mini-bracelet-flat
+                  beadSize="{{item.beadMm||item.bead_mm||11}}"
+                  class="work-img-fallback__bracelet"
+                  containerSize="{{124}}"
+                  pattern="{{item.pattern||[]}}"
+                  renderVersion="{{item.previewRenderVersion||1}}"
+                  snapshotShadow="{{false}}"
+                ></mini-bracelet-flat>
+                <image
+                  class="work-img-fallback__logo"
+                  mode="aspectFit"
+                  src="/assets/SLLOGO.svg"
+                ></image>
+              </view>
+            </view>
+            <view class="work-meta">
+              <view class="work-meta__foot">
+                <text class="work-meta__name">{{item.title}}</text>
+                <text class="work-meta__quote">应用 {{item.viewCount||0}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="works-empty" wx:else>
+          <text class="works-empty__text">暂无作品</text>
+        </view>
+      </view>
+      <view class="designer-bottom-fill"></view>
+    </view>
+  </scroll-view>
+</view>
